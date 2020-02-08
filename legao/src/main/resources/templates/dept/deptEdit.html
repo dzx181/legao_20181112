@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>deptEdit</title>
+    <link href="css/bootstrap.css" type="text/css" charset="UTF-8" rel="stylesheet"/>
+    <link href="css/main.css" type="text/css" charset="UTF-8" rel="stylesheet"/>
+</head>
+<body>
+<body>
+<div id="content_box">
+    <span class="glyphicon glyphicon-circle-arrow-right"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    当前位置：部门管理&nbsp;&gt;&nbsp;更改部门
+    <hr/>
+    <br/>
+    <div id="error" style="color:#FF0000;width: 400px;height: 15px;"></div>
+    <br/>
+    <form id="dept_form" method="post">
+        部&nbsp;&nbsp;&nbsp;门&nbsp;&nbsp;&nbsp;名：&nbsp;<input name="name" id="dept_name" class="inputCss" maxlength="20"
+                                                             th:value="${deptEditVO.name}"/>&nbsp;&nbsp;&nbsp;&nbsp;
+        <br/><br/>部门描述名：<input name="remark" class="inputCss" id="dept_remark" maxlength="20"
+                               th:value="${deptEditVO.remark}"/>&nbsp;<br/><br/>
+        <input type="hidden" name="id" id="depart_id" th:value="${deptEditVO.id}"/>
+        <input type="button" name="editDepart" value="修改" class="btn btn-success" id="btn"/>&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="reset" name="cancel" class="btn btn-danger" value="取消"/>
+    </form>
+</div>
+<!-- 判断数据是否符合要求，提交表单的标志 -->
+<input type="hidden" id="submitInfo" value="true"/>
+</body>
+<script src="js/jquery-1.12.4.js" type="application/javascript" charset="UTF-8"></script>
+<script src="js/common.js" type="application/javascript" charset="UTF-8"></script>
+<script type="text/javascript">
+    $(function () {
+        var window_width = $(window).width();
+        var window_height = $(window).height();
+        $("#content_box").css("width", window_width );
+        $("#content_box").css("height", window_height - 20);
+    })
+    /* 部门名称不能重复 */
+    $("#dept_name").change(function () {
+        $.ajax("/isRedeptName",// 发送请求的URL字符串。
+            {
+                dataType: "json", // 预期服务器返回的数据类型。
+                type: "post", //  请求方式 POST或GET
+                contentType: "application/json", //  发送信息至服务器时的内容编码类型
+                // 发送到服务器的数据。
+                data: JSON.stringify({
+                    name: $("#dept_name").val()
+                }),
+                async: true, // 默认设置下，所有请求均为异步请求。如果设置为false，则发送同步请求
+                // 请求成功后的回调函数。
+                success: function (data) {
+                    if (data) {
+                        $("#error").text(" ");
+                        $("#submitInfo").val("true");
+                    } else {
+                        $("#submitInfo").val("false");
+                        $("#error").text("*该部门名称已经添加过，请重新输入部门名");
+                    }
+                },
+                // 请求出错时调用的函数
+                error: function () {
+                    alert("数据发送失败");
+                }
+            });
+    });
+    $("#btn").click(function () {
+
+        var dept_name = $("#dept_name").val();
+        var dept_remark = $("#dept_remark").val();
+        var re = /[`~!@#$%^&*_+<>{}\\/'[\]]/im;
+        if (dept_name == "") {
+            $("#error").text("*部门名称不能为空");
+        } else if (dept_remark == "") {
+            $("#error").text("*部门详细信息不能为空");
+        } else if (re.test(dept_name)) {
+            $("#error").text("*部门名称存在`~!@#$%^&*_+<>{}\'[]/等的非法字符");
+        } else if ($("#submitInfo").val() == 'false') {
+            $("#error").text("*该部门已经添加过，请重新输入部门");
+        } else {
+            $("#dept_form").attr("action", "saveDept");
+            $("#dept_form").submit();
+        }
+    });
+
+</script>
+
+
+</html>

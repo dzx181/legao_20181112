@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>contractList</title>
+    <link href="css/bootstrap.css" type="text/css" rel="stylesheet"/>
+    <link href="css/main.css" type="text/css" rel="stylesheet"/>
+    <link href="css/paging.css" type="text/css" rel="stylesheet"/>
+    <style>
+
+
+    </style>
+</head>
+<body>
+<div  id="content_box" style="display:flex;flex-direction:column;">
+    <div style="width: 80%">
+    <span class="glyphicon glyphicon-circle-arrow-right"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    当前位置：合同管理&nbsp;&gt;&nbsp;合同查询
+
+    <a style="cursor: pointer;text-decoration: none;color: #000000;float: right;" href="#"><span
+            class="glyphicon glyphicon-print"></span>&nbsp;打印</a>
+
+    <a style="cursor: pointer;text-decoration: none;color: #000000;float: right;margin-right: 50px;" href="/contractExportExcel"><span
+            class="glyphicon glyphicon-export"></span>&nbsp;导出</a>
+</div>
+    <hr/>
+    <form action="" id="contractform">
+
+        合同编号：<input name="contractCode" id="contractCode" style="height: 35px;" class="inputCss"
+                    th:value="${blurContract}==null? '':${blurContract.contractCode}"/>&nbsp;&nbsp;
+        学员：<input name="studentId" id="contractCode" style="height: 35px;" class="inputCss"
+                  th:value="${blurContract}==null? '':${blurContract.studentId}"/>&nbsp;&nbsp;
+        签约日期：<input name="signDate" id="contract_signDate" style="height: 35px;" class="inputCss"
+                    th:value="${blurContract}==null? '':${#dates.format(blurContract.signDate,'yyyy-MM-dd')}"/>&nbsp;&nbsp;
+        <br> <br>
+        起始时间：<input name="startTime" id="contract_startTime" style="height: 35px;" class="inputCss"
+                    th:value="${blurContract}==null? '':${#dates.format(blurContract.startTime,'yyyy-MM-dd')}"/>&nbsp;&nbsp;
+        结束时间：<input name="endTime" id="contract_endTime" style="height: 35px;" class="inputCss"
+                    th:value="${blurContract}==null? '':${#dates.format(blurContract.endTime,'yyyy-MM-dd')}"/>&nbsp;&nbsp;
+
+        <input type="button" value="搜索" class="btn btn-success" id="selectContract"/>&nbsp;
+        <input type="button" class="btn btn-danger" value="删除" id="dropContract" th:if="${session.user.status}==1"/>
+
+        <br/><br/>
+        <table cellspacing="0" cellpadding="" class="table table-hover table-striped table-bordered" style="text-align: center;"
+               id="contract_tab">
+            <tr id="tr_th">
+                <th><input type="checkbox" name="caption" value="0" id="checkAll"/></th>
+                <!--遍历标题-->
+                <th th:each="field:${FieldZH}">
+
+                        [[${field}]]
+
+                </th>
+                <th th:if="${session.user.status}==1">操作</th>
+
+                <!--遍历具体值-->
+            <tr th:each="contract:${contractVOList}">
+                <td><input type="checkbox" name="caption"
+                           th:id="'box_'+${contract.id}" th:value="${contract.id}"/></td>
+                <td th:if="${contract.contractCode}!=null  ">
+                    [[${contract.contractCode}]]
+                </td>
+            <td th:if="${contract.studentId}!=null">
+                <span th:if="${contract.studentVO}!=null">[[${contract.studentVO.name}]]</span>
+                <span th:if="${contract.studentVO}==null" style="color: red">学员已被删除</span>
+            </td>
+                <td th:if="${contract.signDate}!=null">
+                    <span th:text="${#dates.format(contract.signDate,'yyyy年MM月dd日')}"></span></td>
+
+            <td th:if="${contract.classPackageId}!=null">
+                <span th:if="${contract.classtimepackVO}!=null">[[${contract.classtimepackVO.name}]]</span>
+                <span th:if="${contract.classtimepackVO}==null" style="color: red">课时包已被删除</span>
+            </td>
+
+                <td th:if="${contract.price}!=null"> [[${contract.price}]]</td>
+                <td th:if="${contract.discount}!=null ">[[${contract.discount}]]</td>
+
+            <td th:if="${contract.depositId}!=null">
+                <span th:if="${contract.depositVO}!=null">[[${contract.depositVO.moneyAmount}]]</span>
+                <span th:if="${contract.depositVO}==null" style="color: red">未交订金</span>
+            </td>
+
+                <td th:if="${contract.actPay}!=null ">[[${contract.actPay}]]</td>
+                <td th:if="${contract.payType}!=null ">[[${contract.payType}]]</td>
+                <td th:if="${contract.presentationClassTime}!=null ">[[${contract.presentationClassTime}]]</td>
+                <td th:if="${contract.startTime}!=null">
+                    <span th:text="${#dates.format(contract.startTime,'yyyy年MM月dd日')}"></span>
+                </td>
+            <td th:if="${contract.endTime}!=null">
+                <span th:text="${#dates.format(contract.endTime,'yyyy年MM月dd日')}"></span>
+            </td>
+
+                <td th:if="${contract.belongOne}!=null ">[[${contract.belongOne}]]</td>
+
+                <td th:if="${contract.remark}!=null">[[${contract.remark}]]</td>
+            <td th:if="${contract.classTime}!=null">[[${contract.classTime}]]</td>
+            <td th:if="${contract.remainClassTime}!=null">[[${contract.remainClassTime}]]</td>
+            <td th:if="${contract.totalClassTime}!=null">[[${contract.totalClassTime}]]</td>
+            <td th:if="${contract.schoolAreaId}!=null">
+                <span th:if="${contract.schoolArea}!=null">[[${contract.schoolArea.name}]]</span>
+                <span th:if="${contract.schoolArea}==null" style="color: red">校区已被删除</span>
+            </td>
+                <td th:if="${session.user.status}==1"><a th:href="'editContract?contractId='+${contract.id}"><span class="glyphicon glyphicon-pencil"></span></a>
+                </td>
+            </tr>
+        </table>
+        <input type="hidden" name="ifImportanceGradeOrder" id="ifImportanceGradeOrder">
+    </form>
+    <!--分页元素-->
+    <div class="box" id="box" style="align-self:center;"></div>
+    <!--添加表单提交标志-->
+    <form id="pageForm" style="display: none">
+        <input name="contractCode" th:value="${blurContract}==null? '':${blurContract.contractCode}"/>&nbsp;&nbsp;
+        <input name="studentId" th:value="${blurContract}==null? '':${blurContract.studentId} "/>
+        <input name="startTime" th:value="${blurContract}==null? '':${blurContract.startTime}"/>&nbsp;&nbsp;
+        <input name="endTime" th:value="${blurContract}==null? '':${blurContract.endTime} "/>
+        <input name="signDate" th:value="${blurContract}==null? '':${blurContract.signDate} "/>
+        <input type="text" id="pages" name="page"/>
+
+        <input type="button" id="btn" value="tijiao"/>
+        <!--传入分页的参数-->
+        <input type="text" id="actionName" value="selectContract"/>
+    </form>
+</div>
+    <script src="js/jquery-1.12.4.js" type="application/javascript" charset="UTF-8"></script>
+    <script src="js/bootstrap.js" type="application/javascript" charset="UTF-8"></script>
+    <script src="js/paging.js" type="application/javascript"></script>
+    <script src="laydate/laydate.js" type="text/javascript"></script>
+    <script src="js/common.js" type="application/javascript" charset="UTF-8"></script>
+    <script type="text/javascript" th:inline="javascript">
+        //日期插件
+        laydate.render({
+            elem: '#contract_signDate',
+            theme: '#8D48F9'//指定元素
+            , trigger: 'click'
+        });
+        //日期插件
+        laydate.render({
+            elem: '#contract_startTime',
+            theme: '#8D48F9'//指定元素
+            , trigger: 'click'
+        });
+        //日期插件
+        laydate.render({
+            elem: '#contract_endTime',
+            theme: '#8D48F9'//指定元素
+            , trigger: 'click'
+        });
+        /*提交查询*/
+        $("#selectContract").click(function () {
+            $("#contractform").attr("action", "selectContract");
+            $("#contractform").submit();
+        });
+        /*提交删除*/
+        $("#dropContract").click(function () {
+            var chex = $("input[id^='box_']:checked");
+            if (chex.length == 0) {
+                alert("请选择你要删除的合同记录");
+            } else {
+                if (confirm("确定要删除该合同记录吗？")) {
+                    $("#contractform").attr("action", "deleteContracts");
+                    $("#contractform").submit();
+                }
+            }
+
+        });
+
+        /* 全选和反选*/
+        $("#checkAll").click(function () {
+
+            $("input[id^='box_']").prop("checked", this.checked);
+        });
+
+        //分页逻辑
+        var setTotalCount = [[${pageInfo.total}]];
+        var spageNum = [[${pageInfo.pages}]];
+        var initPageNos = [[${pageInfo.pageNum}]]
+        $('#box').paging({
+            initPageNo: initPageNos, // 初始页码
+            totalPages: spageNum, //总页数
+            totalCount: '合计 ' + setTotalCount + ' 条数据', // 条目总数
+            slideSpeed: 600, // 缓动速度。单位毫秒
+            jump: true, //是否支持跳转
+            callback: function (page) { // 回调函数
+                //给标志赋值
+                $("#pages").val(page);
+            }
+        })
+
+
+    </script>
+
+
+</html>

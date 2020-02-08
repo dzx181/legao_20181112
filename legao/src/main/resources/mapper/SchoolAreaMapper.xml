@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zxq.legao.dao.SchoolAreaDao">
+    <insert id="insertSchoolArea" parameterType="com.zxq.legao.entity.po.SchoolAreaPO">
+        INSERT INTO legao_schoolarea(
+        legao_schoolarea.`name`,
+        legao_schoolarea.address,
+        legao_schoolarea.responPersonName,
+        legao_schoolarea.telphone
+        ) VALUES(#{name},#{address},#{responPersonName},#{telphone});
+    </insert>
+    <delete id="deleteSchoolArea" parameterType="java.util.List">
+        DELETE FROM legao_schoolarea WHERE id IN
+        <foreach collection="list" separator="," close=")" open="(" item="id">
+            #{id}
+        </foreach>
+
+    </delete>
+    <update id="updateSchoolArea" parameterType="com.zxq.legao.entity.po.SchoolAreaPO">
+        UPDATE legao_schoolarea SET name = #{name},address = #{address},responPersonName = #{responPersonName},telphone
+        = #{telphone} WHERE id = #{id};
+    </update>
+    <select id="selectSchoolArea" parameterType="com.zxq.legao.entity.po.SchoolAreaPO"
+            resultType="com.zxq.legao.entity.vo.SchoolAreaVO">
+        SELECT
+        legao_schoolarea.id,
+        legao_schoolarea.`name`,
+        legao_schoolarea.address,
+        legao_schoolarea.responPersonName,
+        legao_schoolarea.telphone
+        FROM
+        legao_schoolarea
+
+        <where>
+            <if test="name!=null and name!=''">
+                and name like '%${name}%'
+            </if>
+            <if test="responPersonName!=null and responPersonName!=''">
+                and responPersonName like '%${responPersonName}%'
+            </if>
+
+        </where>
+
+    </select>
+    <select id="selectSchoolAreaByID" parameterType="java.lang.Integer"
+            resultType="com.zxq.legao.entity.vo.SchoolAreaVO">
+        SELECT id,name,address,responPersonName,telphone FROM legao_schoolarea WHERE id = #{id};
+    </select>
+
+</mapper>

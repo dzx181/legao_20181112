@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>relationList</title>
+    <link href="css/bootstrap.css" type="text/css" rel="stylesheet"/>
+    <link href="css/main.css" type="text/css" rel="stylesheet"/>
+    <link href="css/paging.css" type="text/css" rel="stylesheet"/>
+    <style>
+
+
+    </style>
+</head>
+<body>
+<div  id="content_box">
+    <span class="glyphicon glyphicon-circle-arrow-right"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    当前位置：签到管理&nbsp;&gt;&nbsp;修改签到
+
+
+
+    <hr/>
+    <form action="" id="relationform">
+        课程名称： [[${#dates.format(relationEdit.schedule.courseDate,'yyyy年MM月dd日')}]]
+        &nbsp;&nbsp;[[${relationEdit.schedule.date.timeSection}]]&nbsp;的&nbsp;[[${relationEdit.schedule.course.name}]]<br/>
+        签到状态：<select name="signInStatus" class="inputCss" id="studentList">
+        <option value="">--请选择签到状态--</option>
+        <option value="1">准时</option>
+        <option value="2">未签到</option>
+        <option value="3">请假</option>
+    </select>
+        &nbsp;&nbsp;
+
+        <input type="button" value="批量签到" class="btn btn-success" id="updateBatchRelation"/>&nbsp;
+        <input type="button" class="btn btn-danger" value="返回" id="dropRelation"/>
+
+        <br/><br/>
+        <table cellspacing="0" cellpadding="" class="table table-hover table-striped table-bordered" style="text-align: center;"
+               id="relation_tab">
+            <tr id="tr_th">
+                <th><input type="checkbox" name="caption" value="" id="checkAll"/></th>
+                <th>课程</th>
+                <th>学生|电话</th>
+                <th>学员生日|性别</th>
+                <th>老师</th>
+                <th>状态</th>
+
+            </tr>
+            <tr th:each="relation:${relationVOList}">
+                <td><input type="checkbox" name="caption"
+                           th:id="'box_'+${relation.id}" th:value="${relation.id}"/></td>
+                <td th:if="${relation.schedule}==null" style="color: red">该排课信息被删除</td>
+                <td th:if="${relation.schedule}!=null">[[${relation.schedule.course.name}]]</td>
+                <td th:if="${relation.student }== null" style="color: red">该学员被删除</td>
+                <td th:if="${relation.student}!=null">[[${relation.student.name}]]| [[${relation.student.telphone}]]</td>
+                <td th:if="${relation.student}==null" style="color: red">
+                    该学员被删除
+                </td>
+                <td th:if="${relation.student}!=null">
+                    [[${#dates.format(relation.student.birthday,'yyyy年MM月dd日')}]]|[[${relation.student.sex}]]
+                </td>
+                <td th:if="${relation.schedule}==null" style="color: red">该排课信息被删除</td>
+                <td th:if="${relation.schedule}!=null">[[${relation.schedule.teacherVO.name}]]</td>
+                <td th:if="${relation.signInStatus}==1"><span class="label label-success">准时</span></td>
+                <td th:if="${relation.signInStatus}==2"><span class="label label-danger">未签到</span></td>
+                <td th:if="${relation.signInStatus}==3"><span class="label label-default">请假</span></td>
+
+
+
+            </tr>
+        </table>
+<input type="hidden" th:name="scheduleID" th:value="${relationEdit.schedule.id}"/>
+        <input type="hidden" th:name="classTimes" th:value="${relationEdit.schedule.course.courseTime}"/>
+        <input type="hidden" th:name="teacherID" th:value="${relationEdit.schedule.teacherVO.id}"/>
+    </form>
+
+    <script src="js/jquery-1.12.4.js" type="application/javascript" charset="UTF-8"></script>
+    <script src="js/bootstrap.js" type="application/javascript" charset="UTF-8"></script>
+    <script src="js/common.js" type="application/javascript" charset="UTF-8"></script>
+    <script type="text/javascript" th:inline="javascript">
+
+        $(function () {
+
+
+            var message = $("#message").val();
+            if (message) {
+                alert(message);
+            }
+
+        })
+
+        /*提交批量修改*/
+        $("#updateBatchRelation").click(function () {
+            var chex = $("input[id^='box_']:checked");
+            var studentList = $("#studentList").val();
+            if (chex.length == 0) {
+                alert("请选择学员");
+            }else if (studentList.length == 0){
+                alert("请选择学员签到状态");
+            } else {
+                if (confirm("确定要修改该学员的签到状态吗？")) {
+                    $("#relationform").attr("action", "updateBatchRelation");
+                    $("#relationform").submit();
+                }
+            }
+
+        });
+        /*提交返回*/
+        $("#dropRelation").click(function () {
+            $("#relationform").attr("action", "selectRelation");
+            $("#relationform").submit();
+
+        });
+
+        /* 全选和反选*/
+        $("#checkAll").click(function () {
+
+            $("input[id^='box_']").prop("checked", this.checked);
+        });
+
+
+    </script>
+</body>
+</html>

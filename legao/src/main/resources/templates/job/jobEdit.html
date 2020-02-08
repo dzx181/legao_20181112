@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>jobEdit</title>
+    <link href="../css/bootstrap.css" type="text/css" rel="stylesheet"/>
+    <link href="../css/main.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<div id="content_box">
+    <span class="glyphicon glyphicon-circle-arrow-right"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    当前位置：职位管理&nbsp;&gt;&nbsp;修改职位
+    <hr/>
+    <!--添加成功字样-->
+    <div id="addInfo"></div>
+    <div id="error" style="color:#FF0000;font-size:14px ;height: 20px;"></div>
+    <form action="insertUser" id="jobAddform">
+        职位名称：<input name="name" id="job_name" class="inputCss" style="width:200px ;" placeholder="请输入长度不超过20的字符"
+                    maxlength="20" th:value="${jobEdit.name}"/>&nbsp;&nbsp;&nbsp;&nbsp;
+        职位描述：<input type="text" name="remark" id="pass_word" style="height: 35px;width:200px ;" class="inputCss"
+                    placeholder="请输入6-12位的数字和字母" th:value="${jobEdit.remark}"/>&nbsp;<br/><br/>
+        <!--保存职位ID-->
+        <input type="hidden" name="id" th:value="${jobEdit.id}"/>
+        <input type="button" value="修改" class="btn btn-success" id="btn"/>&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="reset" class="btn btn-danger" value="取消"/>
+
+    </form>
+</div>
+<!-- 判断数据是否符合要求，提交表单的标志 -->
+<input type="hidden" id="submitInfo" value="false"/>
+<!-- 判断是否添加成功 -->
+<input type="hidden" th:value="${type}" id="typeInfo"/>
+
+</body>
+<script src="js/jquery-1.12.4.js" type="application/javascript" charset="UTF-8"></script>
+<script src="js/common.js" type="application/javascript" charset="UTF-8"></script>
+<script type="text/javascript">
+
+    /* 职位名不能重复 */
+    $("#job_name").blur(function () {
+
+        $.ajax("/isReJobName",// 发送请求的URL字符串。
+            {
+                dataType: "json", // 预期服务器返回的数据类型。
+                type: "post", //  请求方式 POST或GET
+                contentType: "application/json", //  发送信息至服务器时的内容编码类型
+                // 发送到服务器的数据。
+                data: JSON.stringify({
+                    name: $("#job_name").val()
+                }),
+                async: true, // 默认设置下，所有请求均为异步请求。如果设置为false，则发送同步请求
+                // 请求成功后的回调函数。
+                success: function (data) {
+                    if (data) {
+                        $("#error").text(" ");
+                        $("#submitInfo").val("true");
+                    } else {
+                        $("#submitInfo").val("false");
+                        $("#error").text("*该职位名已经添加过，请重新输入职位名");
+                    }
+                },
+                // 请求出错时调用的函数
+                error: function () {
+                    alert("数据发送失败");
+                }
+            });
+    });
+
+
+    /*判断状态，职位名是否为空*/
+    $("#btn").click(function () {
+        var valu1 = $("#job_name").val();
+        var valu4 = $("#pass_word").val();
+        var re = /[`~!@#$%^&*_+<>{}\\/'[\]]/im;
+        var regx = /^(\w){6,12}$/g;
+        if (valu1.trim().length == 0) {
+            $("#error").text("*请输入职位名");
+        } else if (re.test(valu1.trim())) {
+            $("#error").text("*职位名存在`~!@#$%^&*_+<>{}\'[]/等的非法字符");
+        } else if ($("#submitInfo").val() == 'false') {
+            $("#error").text("*该职位名称已经添加过，请重新输入职位名称");
+        } else if (valu1.trim().length == 0) {
+            $("#error").text("*请输入职位名称");
+        } else {
+            $("#jobAddform").attr("action", "saveJob");
+            $("#jobAddform").submit();
+        }
+
+    });
+
+
+</script>
+</html>

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>membercardAdd</title>
+    <link href="../css/bootstrap.css" type="text/css" rel="stylesheet"/>
+    <link href="../css/main.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<div id="content_box">
+    <span class="glyphicon glyphicon-circle-arrow-right"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    当前位置：会员卡管理&nbsp;&gt;&nbsp;修改会员卡
+    <hr/>
+
+    <div id="error" style="color:#FF0000;font-size:14px ;height: 20px;"></div>
+    <form id="membercardAddform">
+        会员卡编号：
+        <input name="memberCardCode" id="membercard_name" class="inputCss" style="width:200px ;"
+               th:value="${membercardEdit.memberCardCode}"/>&nbsp;&nbsp;&nbsp;&nbsp;
+
+        会员卡类型:<input name="carType" id="membercard_carType" class="inputCss" style="width:200px ;"
+                   th:value="${membercardEdit.carType}"/>&nbsp;&nbsp;&nbsp;&nbsp;
+        学生：<input type="text" name="studentName" id="membercard_studentName" style="height: 35px;width:200px ;" class="inputCss"
+                    th:value="${membercardEdit.studentName}"/>&nbsp;&nbsp;&nbsp;&nbsp;
+        课时：
+        <input type="text" name="classTime" id="membercard_classTime" style="height: 35px;width:200px ;" class="inputCss"
+              th:value="${membercardEdit.classTime}"/>&nbsp;&nbsp;&nbsp;&nbsp;
+
+        </br>
+        </br>
+        <input type="hidden" name="id" th:value="${membercardEdit.id}"/>
+        <input type="button" value="修改" class="btn btn-success" id="btn"/>&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="reset" class="btn btn-danger" value="取消"/>
+
+    </form>
+</div>
+<!-- 判断数据是否符合要求，提交表单的标志 -->
+<input type="hidden" id="submitInfo" value="false"/>
+
+</body>
+<script src="js/jquery-1.12.4.js" type="application/javascript" charset="UTF-8"></script>
+<script src="js/common.js" type="application/javascript" charset="UTF-8"></script>
+<script type="text/javascript">
+    /*判断状态，会员卡名是否为空*/
+    $("#btn").click(function () {
+        var membercard_name = $("#membercard_name").val();
+        var membercard_carType = $("#membercard_carType").val();
+        var membercard_studentName = $("#membercard_studentName").val();
+        var membercard_classTime = $("#membercard_classTime").val();
+        var isNum = /^[0-9]+.?[0-9]*$/; //判断字符串是否为数字 //判断正整数 /^[1-9]+[0-9]*]*$/
+        var re = /[`~!@#$%^&*_+<>{}\\/'[\]]/im;
+
+        if (membercard_name.trim().length == 0) {
+            $("#error").text("*请输入会员卡的名称");
+        } else if (re.test(membercard_name.trim())) {
+            $("#error").text("*会员卡的名称存在`~!@#$%^&*_+<>{}\'[]/等的非法字符");
+        }else if (membercard_carType.trim().length == 0) {
+            $("#error").text("*该请输入课时数");
+        } else if (membercard_studentName.trim().length == 0) {
+            $("#error").text("*请输入会员卡价格");
+        } else if (membercard_classTime.trim().length == 0) {
+            $("#error").text("*请输入会员卡课时");
+        }else if (!isNum.test(membercard_classTime)) {
+            $("#error").text("*会员卡课时只允许数字");
+        }else {
+            $("#membercardAddform").attr("action", "saveMembercard");
+            $("#membercardAddform").submit();
+        }
+
+    });
+
+
+</script>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>schoolAreaAdd</title>
+    <link href="../css/bootstrap.css" type="text/css" rel="stylesheet"/>
+    <link href="../css/main.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<div id="content_box">
+<span class="glyphicon glyphicon-circle-arrow-right"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;
+当前位置：校区管理&nbsp;&gt;&nbsp;修改校区
+<hr/>
+
+<div id="error" style="color:#FF0000;font-size:14px ;height: 20px;"></div>
+<form id="schoolAreaAddform">
+
+
+    校区人:<input name="name" id="schoolArea_name" class="inputCss" style="width:200px ;" placeholder="请输入长度不超过20的字符"
+               maxlength="20"   th:value="${schoolAreaEdit.name}"/>&nbsp;&nbsp;&nbsp;&nbsp;
+    校区地址：<input type="text" name="address" id="schoolArea_address" style="height: 35px;width:200px ;" class="inputCss"
+                placeholder="请输入校区地址"  th:value="${schoolAreaEdit.address}"/>&nbsp;&nbsp;&nbsp;&nbsp;
+    校区负责人：<input type="text" name="responPersonName" id="schoolArea_responPersonName" style="height: 35px;width:200px ;" class="inputCss"
+                 placeholder="请输入校区负责人"  th:value="${schoolAreaEdit.responPersonName}"/>&nbsp;&nbsp;&nbsp;&nbsp;
+    负责人联系电话：<input type="text" name="telphone" id="schoolArea_telphone" style="height: 35px;width:200px ;" class="inputCss"
+                   placeholder="请输入负责人联系电话"  th:value="${schoolAreaEdit.telphone}"/>&nbsp;&nbsp;&nbsp;&nbsp;
+
+
+    </br>
+    </br>
+    <input type="button" value="添加" class="btn btn-success" id="btn"/>&nbsp;&nbsp;&nbsp;&nbsp;
+    <input type="reset" class="btn btn-danger" value="取消"/>
+<!--id-->
+    <input type="hidden" name="id" th:value="${schoolAreaEdit.id}"/>
+</form>
+</div>
+<!-- 判断数据是否符合要求，提交表单的标志 -->
+<input type="hidden" id="submitInfo" value="false"/>
+<!-- 判断是否添加成功 -->
+<input type="hidden" th:value="${type}" id="typeInfo"/>
+
+</body>
+<script src="js/jquery-1.12.4.js" type="application/javascript" charset="UTF-8"></script>
+<script src="js/common.js" type="application/javascript" charset="UTF-8"></script>
+<script type="text/javascript">
+
+    /* type */
+    $(function () {
+        if ($("#typeInfo").val() == 'yes') {
+            $("#addInfo").html('<h3 style="color: green;height: 30px;">添加成功</h3>');
+        } else if ($("#typeInfo").val() == 'no') {
+            $("#addInfo").html('<h3 style="color: green;height: 30px;">添加失败</h3>');
+        }
+        /* 定时清除添加成功字样 */
+        setTimeout(function () {
+            $("#addInfo").text('');
+        }, 5000);
+
+    });
+
+    /*判断状态，校区名是否为空*/
+    $("#btn").click(function () {
+        var schoolArea_address = $("#schoolArea_address").val();
+        var schoolArea_name = $("#schoolArea_name").val();
+        var schoolArea_responPersonName = $("#schoolArea_responPersonName").val();
+        var schoolArea_telphone = $("#schoolArea_telphone").val();
+        var re = /[`~!@#$%^&*_+<>{}\\/'[\]]/im;
+        var phone_regx = /^1(3|4|5|7|8)\d{9}$/;
+        if (schoolArea_name.trim().length == 0) {
+            $("#error").text("*该请输入校区人");
+        }else if (schoolArea_address.trim().length == 0) {
+            $("#error").text("*请输入校区的地址");
+        }  else if (schoolArea_responPersonName.trim().length == 0) {
+            $("#error").text("*请输入校区负责人");
+        } else if (schoolArea_telphone.trim().length == 0) {
+            $("#error").text("*请输入校区负责人联系电话");
+        }else if (re.test(schoolArea_telphone.trim())) {
+            $("#error").text("*校区人存在`~!@#$%^&*_+<>{}\'[]/等的非法字符");
+        }else if (!phone_regx.test(schoolArea_telphone.trim())) {
+            $("#error").text("*输入的手机格式不对，请正确输入手机格式");
+        }  else {
+            $("#schoolAreaAddform").attr("action", "saveSchoolArea");
+            $("#schoolAreaAddform").submit();
+        }
+
+    });
+
+
+</script>
+</html>

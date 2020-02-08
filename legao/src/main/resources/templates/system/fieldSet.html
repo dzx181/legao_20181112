@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="css/bootstrap.css" type="text/css" rel="stylesheet"/>
+    <link rel="stylesheet" href="layui/css/layui.css">
+    <link href="css/main.css" type="text/css" rel="stylesheet"/>
+    <script src="js/common.js" type="application/javascript" charset="UTF-8"></script>
+</head>
+<body>
+<div  id="content_box" style="width: 100%">
+    <span class="glyphicon glyphicon-circle-arrow-right"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    当前位置：系统设置&nbsp;&gt;&nbsp;字段设置
+
+    <a style="margin-left: 530px;cursor: pointer;text-decoration: none;color: #000000; " href="#"><span
+            class="glyphicon glyphicon-print"></span>&nbsp;打印</a>
+    <a style="margin-left: 100px;cursor: pointer;text-decoration: none;color: #000000;" href="#"><span
+            class="glyphicon glyphicon-export"></span>&nbsp;导出</a>
+
+    <hr/>
+    <div class="layui-tab layui-tab-brief">
+        <ul class="layui-tab-title">
+            <li class="layui-this">学员管理</li>
+            <li>员工管理</li>
+            <li>合同管理</li>
+        </ul>
+        <div class="layui-tab-content">
+            <div class="layui-tab-item layui-show">
+                <!--学员模块字段设置-->
+                <form class="layui-form" id="selectStudentFieldForm">
+                    <h2><span id="info" style="color: green;height: 30px;">[[${setStatus}]]</span></h2>
+                    <div class="layui-form-item" style="margin-left: 30px;">
+
+                        <div data-toggle="tooltip" data-placement="bottom" title="学生昵称" style="display: inline">
+                            <input type="checkbox" name="selectStudentField" title="昵称" value="0"
+                                   id="selectStudentField_nickName"/>
+                        </div>
+                        <div data-toggle="tooltip" data-placement="bottom" title="学生姓名" style="display: inline">
+
+                            <input type="checkbox" name="selectStudentField" title="姓名" value="1"
+                                   id="selectStudentField_name">
+                        </div>
+
+                        <div data-toggle="tooltip" data-placement="bottom" title="描述学员与家长的关系" style="display: inline">
+
+                            <input type="checkbox" name="selectStudentField" title="家长关系" value="2"
+                                   id="selectStudentField_parentRal">
+                        </div>
+
+                        <div data-toggle="tooltip" data-placement="bottom" title="学员的家长姓名" style="display: inline">
+
+                            <input type="checkbox" name="selectStudentField" title="家长姓名" value="3"
+                                   id="selectStudentField_parment">
+                        </div>
+
+                        <div data-toggle="tooltip" data-placement="bottom" title="学员联系电话" style="display: inline">
+
+                            <input type="checkbox" name="selectStudentField" title="联系电话" value="4"
+                                   id="selectStudentField_telphone">
+                        </div>
+
+                        <div data-toggle="tooltip" data-placement="bottom" title="微信" style="display: inline">
+
+                            <input type="checkbox" name="selectStudentField" title="微信" value="5"
+                                   id="selectStudentField_webID">
+                        </div>
+
+                        <div data-toggle="tooltip" data-placement="bottom" title="学员学校" style="display: inline">
+
+                            <input type="checkbox" name="selectStudentField" title="学校" value="6"
+                                   id="selectStudentField_edu">
+                        </div>
+                        <div data-toggle="tooltip" data-placement="bottom" title="学员生日" style="display: inline">
+
+                            <input type="checkbox" name="selectStudentField" title="生日" value="7"
+                                   id="selectStudentField_birth">
+                        </div>
+                        </br></br>
+                        <div data-toggle="tooltip" data-placement="bottom" title="学员性别" style="display: inline">
+
+                            <input type="checkbox" name="selectStudentField" title="性别" value="8"
+                                   id="selectStudentField_sex">
+                        </div>
+
+                        <div data-toggle="tooltip" data-placement="bottom" title="学员录入日期" style="display: inline">
+
+                            <input type="checkbox" name="selectStudentField" title="录入日期" value="9"
+                                   id="selectStudentField_entryDate">
+                        </div>
+
+                        <div data-toggle="tooltip" data-placement="bottom" title="学员的备用电话" style="display: inline">
+
+                            <input type="checkbox" name="selectStudentField" title="备用电话" value="10"
+                                   id="selectStudentField_sparePhone">
+                        </div>
+
+                        <div data-toggle="tooltip" data-placement="bottom" title="市场人员" style="display: inline">
+
+                            <input type="checkbox" name="selectStudentField" title="市场人员" value="11"
+                                   id="selectStudentField_mark">
+                        </div>
+
+                        <div data-toggle="tooltip" data-placement="bottom" title="学员顾问" style="display: inline">
+
+                            <input type="checkbox" name="selectStudentField" title="顾问" value="12"
+                                   id="selectStudentField_advior">
+                        </div>
+
+                        <div data-toggle="tooltip" data-placement="bottom" title="学员所属地区" style="display: inline">
+
+                            <input type="checkbox" name="selectStudentField" title="学员所属地区" value="13"
+                                   id="selectStudentField_area">
+                        </div>
+
+                        <div data-toggle="tooltip" data-placement="bottom" title="学员期望到课时间" style="display: inline">
+
+                            <input type="checkbox" name="selectStudentField" title="期望时间" value="14"
+                                   id="selectStudentField_expect">
+                        </div>
+                        </br></br>
+                        <div data-toggle="tooltip" data-placement="bottom" title="学员的基本情况" style="display: inline">
+
+                            <input type="checkbox" name="selectStudentField" title="基本情况" value="15"
+                                   id="selectStudentField_base">
+                        </div>
+                        <div data-toggle="tooltip" data-placement="bottom" title="学员的状态：1代表新客户，2代表试听客户，3代表号码无效客户，4其他"
+                             style="display: inline">
+
+                            <input type="checkbox" name="selectStudentField" title="状态" value="16"
+                                   id="selectStudentField_status">
+                        </div>
+                        <div data-toggle="tooltip" data-placement="bottom" title="重要程度：1代表重点，2代表优质，3会员，4一般，5放弃，6未知"
+                             style="display: inline">
+
+                            <input type="checkbox" name="selectStudentField" title="重要程度" value="17"
+                                   id="selectStudentField_import">
+                        </div>
+                        <div data-toggle="tooltip" data-placement="bottom" title="学员的来源" style="display: inline">
+
+                            <input type="checkbox" name="selectStudentField" title="来源" value="18"
+                                   id="selectStudentField_source">
+                        </div>
+                        <div data-toggle="tooltip" data-placement="bottom" title="学员的老师" style="display: inline">
+
+                            <input type="checkbox" name="selectStudentField" title="老师" value="19"
+                                   id="selectStudentField_teacher">
+                        </div>
+                        <div data-toggle="tooltip" data-placement="bottom" title="校区名" style="display: inline">
+
+                            <input type="checkbox" name="selectStudentField" title="校区" value="20"
+                                   id="selectStudentField_school">
+                        </div>
+                        <div data-toggle="tooltip" data-placement="bottom" title="学员的跟进人" style="display: inline">
+
+                            <input type="checkbox" name="selectStudentField" title="跟进" value="21"
+                                   id="selectStudentField_follow">
+                        </div>
+
+                        <div data-toggle="tooltip" data-placement="bottom" title="学员的年龄" style="display: inline">
+
+                            <input type="checkbox" name="selectStudentField" title="学员年龄" value="22"
+                                   id="selectStudentField_stuAge">
+                        </div>
+                        </br></br>
+                        <input type="button" value="设置" class="btn btn-success" onclick="btn('selectStudentField')"/>&nbsp;&nbsp;&nbsp;&nbsp;
+                        <input type="reset" name="cancel" class="btn btn-danger" value="重置"/></td>
+                    </div>
+
+
+                </form>
+            </div>
+            <div class="layui-tab-item">
+                <!--员工模块字段设置-->
+                <form class="layui-form" id="selectEmployFieldForm">
+                    <h2><span id="info" style="color: green;height: 30px;">[[${setStatus}]]</span></h2>
+                    <div class="layui-form-item" style="margin-left: 30px;">
+
+                        <div data-toggle="tooltip" data-placement="bottom" title="员工姓名" style="display: inline">
+
+                            <input type="checkbox" name="selectEmployField" title="姓名" value="0"
+                                   id="selectEmployField_name">
+                        </div>
+
+                        <div data-toggle="tooltip" data-placement="bottom" title="员工性别" style="display: inline">
+
+                            <input type="checkbox" name="selectEmployField" title="性别" value="1"
+                                   id="selectEmployField_sex">
+                        </div>
+                        <div data-toggle="tooltip" data-placement="bottom" title="员工联系电话" style="display: inline">
+
+                            <input type="checkbox" name="selectEmployField" title="电话" value="2"
+                                   id="selectEmployField_telphone">
+                        </div>
+
+                        <div data-toggle="tooltip" data-placement="bottom" title="员工生日" style="display: inline">
+
+                            <input type="checkbox" name="selectEmployField" title="生日" value="3"
+                                   id="selectEmployField_birth">
+                        </div>
+                        </br></br>
+
+
+                        <div data-toggle="tooltip" data-placement="bottom" title="员工入职日期" style="display: inline">
+
+                            <input type="checkbox" name="selectEmployField" title="入职日期" value="4"
+                                   id="selectEmployField_entryDate">
+                        </div>
+
+
+                        <div data-toggle="tooltip" data-placement="bottom" title="员工职位" style="display: inline">
+
+                            <input type="checkbox" name="selectEmployField" title="职位" value="5"
+                                   id="selectEmployField_job">
+                        </div>
+
+                        <div data-toggle="tooltip" data-placement="bottom" title="员工的基本工资" style="display: inline">
+
+                            <input type="checkbox" name="selectEmployField" title="基本工资" value="6"
+                                   id="selectEmployField_baseSalary">
+                        </div>
+
+                        <div data-toggle="tooltip" data-placement="bottom" title="员工是否全勤" style="display: inline">
+
+                            <input type="checkbox" name="selectEmployField" title="全勤" value="7"
+                                   id="selectEmployField_fullWork">
+                        </div>
+                        </br></br>
+                        <div data-toggle="tooltip" data-placement="bottom" title="员工享有的餐补情况" style="display: inline">
+
+                            <input type="checkbox" name="selectEmployField" title="餐补" value="8"
+                                   id="selectEmployField_eat">
+                        </div>
+
+                        <div data-toggle="tooltip" data-placement="bottom" title="员工的课时费" style="display: inline">
+
+                            <input type="checkbox" name="selectEmployField" title="课时费" value="9"
+                                   id="selectEmployField_class">
+                        </div>
+                        <div data-toggle="tooltip" data-placement="bottom" title="员工的总课时" style="display: inline">
+
+                            <input type="checkbox" name="selectEmployField" title="总课时（h）" value="10"
+                                   id="selectEmployField_totalClass">
+                        </div>
+                        <div data-toggle="tooltip" data-placement="bottom" title="员工的提成" style="display: inline">
+
+                            <input type="checkbox" name="selectEmployField" title="提成" value="11"
+                                   id="selectEmployField_extraPay">
+                        </div>
+                        </br></br>
+                        <div data-toggle="tooltip" data-placement="bottom" title="员工所属校区" style="display: inline">
+
+                            <input type="checkbox" name="selectEmployField" title="校区" value="12"
+                                   id="selectEmployField_area">
+                        </div>
+                        <div data-toggle="tooltip" data-placement="bottom" title="员工的状态：1表在职，2表离职，3表其他"
+                             style="display: inline">
+
+                            <input type="checkbox" name="selectEmployField" title="状态" value="13"
+                                   id="selectEmployField_status">
+                        </div>
+                        </br></br>
+
+                        <input type="button" value="设置" class="btn btn-success" onclick="btn('selectEmployField')" />&nbsp;&nbsp;&nbsp;&nbsp;
+                        <input type="reset" name="cancel" class="btn btn-danger" value="重置" /></td>
+                    </div>
+
+
+                </form>
+            </div>
+            <div class="layui-tab-item">
+
+                <!--合同模块字段设置-->
+                <form class="layui-form" id="selectContractFieldForm">
+                    <h2><span id="info" style="color: green;height: 30px;">[[${setStatus}]]</span></h2>
+                    <div class="layui-form-item" style="margin-left: 30px;">
+
+                        <div data-toggle="tooltip" data-placement="bottom" title="合同编号" style="display: inline">
+
+                            <input type="checkbox" name="selectContractField" title="合同编号" value="0"
+                                   id="selectContractField_contractCode">
+                        </div>
+
+                        <div data-toggle="tooltip" data-placement="bottom" title="学员" style="display: inline">
+
+                            <input type="checkbox" name="selectContractField" title="学员" value="1"
+                                   id="selectContractField_studentName">
+                        </div>
+                        <div data-toggle="tooltip" data-placement="bottom" title="合同签约日期" style="display: inline">
+
+                            <input type="checkbox" name="selectContractField" title="签约日期" value="2"
+                                   id="selectContractField_signDate">
+                        </div>
+
+                        <div data-toggle="tooltip" data-placement="bottom" title="课时包名称" style="display: inline">
+
+                            <input type="checkbox" name="selectContractField" title="课时包名称" value="3"
+                                   id="selectContractField_classPackageId">
+                        </div>
+                        </br></br>
+
+
+                        <div data-toggle="tooltip" data-placement="bottom" title="价格" style="display: inline">
+
+                            <input type="checkbox" name="selectContractField" title="价格" value="4"
+                                   id="selectContractField_price">
+                        </div>
+
+
+                        <div data-toggle="tooltip" data-placement="bottom" title="折扣" style="display: inline">
+
+                            <input type="checkbox" name="selectContractField" title="折扣" value="5"
+                                   id="selectContractField_discount">
+                        </div>
+
+                        <div data-toggle="tooltip" data-placement="bottom" title="订金" style="display: inline">
+
+                            <input type="checkbox" name="selectContractField" title="订金" value="6"
+                                   id="selectContractField_depositId">
+                        </div>
+                        <div data-toggle="tooltip" data-placement="bottom" title="实际支付" style="display: inline">
+
+                            <input type="checkbox" name="selectContractField" title="实际支付" value="7"
+                                   id="selectContractField_actPay">
+                        </div>
+
+                        </br></br>
+                        <div data-toggle="tooltip" data-placement="bottom" title="支付方式" style="display: inline">
+
+                            <input type="checkbox" name="selectContractField" title="支付方式" value="8"
+                                   id="selectContractField_payType">
+                        </div>
+
+                        <div data-toggle="tooltip" data-placement="bottom" title="赠送课时" style="display: inline">
+
+                            <input type="checkbox" name="selectContractField" title="赠送课时" value="9"
+                                   id="selectContractField_presentationClassTime">
+                        </div>
+                        <div data-toggle="tooltip" data-placement="bottom" title="合同起始时间" style="display: inline">
+
+                            <input type="checkbox" name="selectContractField" title="起始时间" value="10"
+                                   id="selectContractField_startTime">
+                        </div>
+                        <div data-toggle="tooltip" data-placement="bottom" title="合同结束时间" style="display: inline">
+
+                            <input type="checkbox" name="selectContractField" title="结束时间" value="11"
+                                   id="selectContractField_endTime">
+                        </div>
+                        </br></br>
+                        <div data-toggle="tooltip" data-placement="bottom" title="业绩所属" style="display: inline">
+
+                            <input type="checkbox" name="selectContractField" title="业绩所属" value="12"
+                                   id="selectContractField_belongOne">
+                        </div>
+                        <!--<div data-toggle="tooltip" data-placement="bottom" title="会员卡编号"-->
+                             <!--style="display: inline">-->
+
+                            <!--<input type="checkbox" name="selectContractField" title="会员卡编号" value="13"-->
+                                   <!--id="selectContractField_memberCarId">-->
+                        <!--</div>-->
+                        <div data-toggle="tooltip" data-placement="bottom" title="备注"
+                             style="display: inline">
+
+                            <input type="checkbox" name="selectContractField" title="备注" value="14"
+                                   id="selectContractField_remark">
+                        </div>
+                        <div data-toggle="tooltip" data-placement="bottom" title="课时"
+                             style="display: inline">
+
+                            <input type="checkbox" name="selectContractField" title="课时(h)" value="15"
+                                   id="selectContractField_allClassTime">
+                        </div>
+                        <div data-toggle="tooltip" data-placement="bottom" title="剩余课时(h)"
+                             style="display: inline">
+
+                            <input type="checkbox" name="selectContractField" title="剩余课时" value="16"
+                                   >
+                        </div>
+                        <div data-toggle="tooltip" data-placement="bottom" title="总课时(h)"
+                             style="display: inline">
+
+                            <input type="checkbox" name="selectContractField" title="总课时" value="17"
+                            >
+                        </div>
+                        <div data-toggle="tooltip" data-placement="bottom" title="校区"
+                             style="display: inline">
+
+                            <input type="checkbox" name="selectContractField" title="校区" value="18"
+                            >
+                        </div>
+                        </br></br>
+
+                        <input type="button" value="设置" class="btn btn-success" onclick="btn('selectContractField')" />&nbsp;&nbsp;&nbsp;&nbsp;
+                        <input type="reset" name="cancel" class="btn btn-danger" value="重置" /></td>
+                    </div>
+
+
+                </form>
+
+            </div>
+            <div class="layui-tab-item">内容4</div>
+        </div>
+    </div>
+
+
+</div>
+</body>
+<script src="js/jquery-1.9.1.js" type="application/javascript" charset="UTF-8"></script>
+<script src="js/layer.js"></script>
+<script src="js/bootstrap.js" type="application/javascript" charset="UTF-8"></script>
+<script src="../layui/layui.js"></script>
+
+<script>
+    //注意：选项卡 依赖 element 模块，否则无法进行功能性操作
+    layui.use('element', function () {
+        var element = layui.element;
+    });
+    layui.use(['layer', 'form'], function () {
+        var layer = layui.layer
+            , form = layui.form;
+    });
+    $(function () {
+
+        setTimeout(function () {
+            $("#info").text('');
+        }, 5000);
+        $('[data-toggle="tooltip"]').tooltip();
+
+    });
+
+    function btn(action) {
+        // var sel = "input[id^='"+action+"_']:checked";
+        var checkBox = document.getElementsByName("" + action);
+        var boxArry = [];
+        for (index in checkBox) {
+            if (checkBox[index].checked) {
+                boxArry.push(checkBox[index].value);
+            }
+        }
+        $.ajax(action, {
+            data: JSON.stringify(boxArry),
+            dataType: "json",
+            contentType: "application/json",
+            type: "post",
+            success: function (data) {
+                alert(data);
+            }, error: function () {
+                alert("设置失败");
+
+            }
+        })
+
+    }
+
+</script>
+</html>

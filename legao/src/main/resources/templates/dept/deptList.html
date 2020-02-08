@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>deptList</title>
+    <link href="css/bootstrap.css" type="text/css" charset="UTF-8" rel="stylesheet"/>
+    <link href="css/main.css" type="text/css" charset="UTF-8" rel="stylesheet"/>
+    <link href="css/paging.css" type="text/css" rel="stylesheet"/>
+</head>
+<script>
+
+</script>
+<div>
+
+<div id="content_box" style="display:flex;flex-direction:column;">
+    <div style="width: 80%">
+    <span class="glyphicon glyphicon-circle-arrow-right"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    当前位置：部门管理&nbsp;&gt;&nbsp;部门查询
+
+    <a style="cursor: pointer;text-decoration: none;color: #000000;float: right;" href="#"><span
+            class="glyphicon glyphicon-print"></span>&nbsp;打印</a>
+
+    <a style="cursor: pointer;text-decoration: none;color: #000000;float: right;margin-right: 50px;" href="/employExportExcel"><span
+            class="glyphicon glyphicon-export"></span>&nbsp;导出</a>
+</div>
+    <hr/>
+    <form action="" id="departmentform">
+
+        部门名称：<input type="text" id="deptName" style="height: 35px;" name="name" class="inputCss"/>&nbsp;
+        <input type="button" value="搜索" class="btn btn-success" id="selectDepartment"/>&nbsp;&nbsp;
+        <input type="button" class="btn btn-danger" value="删除" id="dropDepartment" th:if="${session.user.status}==1"/>
+        <br/><br/>
+        <table class="table table-hover table-striped table-bordered" style="text-align: center;width: 82%;">
+            <tr>
+                <th><input type="checkbox" name="caption" value="0" id="checkAll"></th>
+                <th>部门名称</th>
+                <th>详细信息</th>
+                <th>部门创建时间</th>
+                <th>部门总人数</th>
+                <th th:if="${session.user.status}==1">操作</th>
+
+            </tr>
+            <tr th:each="dept:${deptVOList}">
+                <td><input type="checkbox" name="caption"
+                           th:id="'box_'+${dept.id}" th:value="${dept.id}"/></td>
+                <td>[[${dept.name}]]</td>
+                <td>[[${dept.remark}]]</td>
+                <td>
+                    <div th:text="${#dates.format(dept.createDate,'yyyy年MM月dd日 HH时mm分ss秒')}"></div>
+                </td>
+                <td th:if="${dept.deptAllNum}==null">0</td>
+                <td th:if="${dept.deptAllNum}!=null">[[${dept.deptAllNum}]]</td>
+                <td th:if="${session.user.status}==1"><a th:href="'editDept?deptId='+${dept.id}"><span class="glyphicon glyphicon-pencil"></span></a></td>
+            </tr>
+        </table>
+
+
+    </form>
+
+</div>
+<!--分页元素-->
+<div class="box" id="box" style="align-self:center;"></div>
+<!--添加表单提交标志-->
+<form id="pageForm" style="display: none">
+    <input type="text" id="pages" name="page"/>
+    <input type="button" id="btn" value="tijiao"/>
+    <!--传入分页的参数-->
+    <input type="text" id="actionName" value="selectDept"/>
+</form>
+</div>
+<script src="js/jquery-1.12.4.js" type="application/javascript" charset="UTF-8"></script>
+<script src="js/bootstrap.js" type="application/javascript" charset="UTF-8"></script>
+<script src="js/paging.js" type="application/javascript"></script>
+<script src="js/common.js" type="application/javascript" charset="UTF-8"></script>
+<script type="text/javascript" th:inline="javascript">
+    //分页逻辑
+    var setTotalCount = [[${pageInfo.total}]];
+    var spageNum = [[${pageInfo.pages}]];
+    var initPageNos = [[${pageInfo.pageNum}]]
+    $('#box').paging({
+        initPageNo: initPageNos, // 初始页码
+        totalPages: spageNum, //总页数
+        totalCount: '合计 ' + setTotalCount + ' 条数据', // 条目总数
+        slideSpeed: 600, // 缓动速度。单位毫秒
+        jump: true, //是否支持跳转
+        callback: function (page) { // 回调函数
+            //给标志赋值
+            $("#pages").val(page);
+        }
+    })
+
+
+
+    /*提交删除*/
+    $("#dropDepartment").click(function () {
+        var chex = $("input[id^='box_']:checked");
+        if (chex.length == 0) {
+            alert("请选择你要删除的部门");
+        } else {
+            if (confirm("确定要删除该部门吗？")) {
+                $("#departmentform").attr("action", "deleteDept");
+                $("#departmentform").submit();
+            }
+        }
+
+    });
+    /* 全选和反选*/
+    $("#checkAll").click(function () {
+
+        $("input[id^='box_']").prop("checked", this.checked);
+    });
+    /*提交查询*/
+    $("#selectDepartment").click(function () {
+        $("#departmentform").attr("action", "selectDept");
+        $("#departmentform").submit();
+    });
+
+</script>
+
+</body>
+</html>

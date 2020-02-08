@@ -1,0 +1,231 @@
+* {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.fl {
+    float: left;
+}
+
+@media screen and (min-width: 1200px) {
+    .box {
+        height: 35px;
+        line-height: 35px;
+        text-align: center;
+    }
+
+    .box button {
+        padding: 0 10px;
+        margin: 0 10px;
+        height: 35px;
+        float: left;
+        cursor: pointer;
+        border: 1px solid #E2E2E2;
+        background-color: #ffffff;
+    }
+
+    .box .first-page,
+    .box .last-page {
+        margin: 0;
+    }
+
+    .box .pageWrap {
+        height: 35px;
+        float: left;
+        overflow: hidden;
+    }
+
+    .box .pageWrap ul {
+        width: 100000px;
+        height: 35px;
+        float: left;
+    }
+
+    .box .pageWrap ul li {
+        width: 60px;
+        height: 35px;
+        border: 1px solid #E2E2E2;
+        line-height: 35px;
+        box-sizing: border-box;
+        cursor: pointer;
+        float: left;
+    }
+
+    .box .pageWrap ul .sel-page {
+        background-color: yellow;
+    }
+
+    .box .jump-text {
+        width: 40px;
+        height: 35px;
+        box-sizing: border-box;
+        text-align: center;
+        margin: 0 5px;
+        float: left;
+        border: 1px solid #E2E2E2;
+    }
+
+    .box .jump-button {
+        margin: 0;
+        float: left;
+    }
+
+    .box .total-pages,
+    .box .total-count {
+        margin-left: 10px;
+        float: left;
+        font-size: 12px;
+    }
+
+}
+
+@media screen and (max-width: 1200px) {
+    .box {
+        height: 25px;
+        line-height: 25px;
+        text-align: center;
+    }
+
+    .box button {
+        padding: 0 10px;
+        margin: 0 10px;
+        height: 25px;
+        float: left;
+        cursor: pointer;
+        border: 1px solid #E2E2E2;
+        background-color: #ffffff;
+    }
+
+    .box .first-page,
+    .box .last-page {
+        margin: 0;
+    }
+
+    .box .pageWrap {
+        height: 25px;
+        float: left;
+        overflow: hidden;
+    }
+
+    .box .pageWrap ul {
+        width: 100000px;
+        height: 25px;
+        float: left;
+    }
+
+    .box .pageWrap ul li {
+        width: 60px;
+        height: 25px;
+        border: 1px solid #E2E2E2;
+        line-height: 25px;
+        box-sizing: border-box;
+        cursor: pointer;
+        float: left;
+    }
+
+    .box .pageWrap ul .sel-page {
+        background-color: yellow;
+    }
+
+    .box .jump-text {
+        width: 30px;
+        height: 25px;
+        box-sizing: border-box;
+        text-align: center;
+        margin: 0 5px;
+        float: left;
+        border: 1px solid #E2E2E2;
+    }
+
+    .box .jump-button {
+        margin: 0;
+        float: left;
+    }
+
+    .box .total-pages,
+    .box .total-count {
+        margin-left: 5px;
+        float: left;
+        font-size: 10px;
+    }
+
+}
+
+/* 设置了浏览器宽度不大于1200px时 abc 显示900px宽度 */
+
+@media screen and (max-width: 901px) {
+    .box {
+        height: 35px;
+        line-height: 35px;
+        text-align: center;
+    }
+
+    .box button {
+        padding: 0 10px;
+        margin: 0 10px;
+        height: 35px;
+        float: left;
+        cursor: pointer;
+        border: 1px solid #E2E2E2;
+        background-color: #ffffff;
+    }
+
+    .box .first-page,
+    .box .last-page {
+        margin: 0;
+    }
+
+    .box .pageWrap {
+        height: 35px;
+        float: left;
+        overflow: hidden;
+    }
+
+    .box .pageWrap ul {
+        width: 100000px;
+        height: 35px;
+        float: left;
+    }
+
+    .box .pageWrap ul li {
+        width: 60px;
+        height: 35px;
+        border: 1px solid #E2E2E2;
+        line-height: 35px;
+        box-sizing: border-box;
+        cursor: pointer;
+        float: left;
+    }
+
+    .box .pageWrap ul .sel-page {
+        background-color: yellow;
+    }
+
+    .box .jump-text {
+        width: 40px;
+        height: 35px;
+        box-sizing: border-box;
+        text-align: center;
+        margin: 0 5px;
+        float: left;
+        border: 1px solid #E2E2E2;
+    }
+
+    .box .jump-button {
+        margin: 0;
+        float: left;
+    }
+
+    .box .total-pages,
+    .box .total-count {
+        margin-left: 10px;
+        float: left;
+        font-size: 12px;
+    }
+
+}
+
+/* 设置了浏览器宽度不大于901px时 abc 显示200px宽度 */
+
+

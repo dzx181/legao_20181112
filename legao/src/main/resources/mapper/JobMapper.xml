@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxq.legao.dao.JobDao">
+
+
+    <!--添加职位 -->
+    <insert id="addJob" parameterType="com.zxq.legao.entity.po.JobPO">
+        insert into
+        legao_job(name,remark,createDate) values(#{name},#{remark},now());
+    </insert>
+    <!-- 删除职位 -->
+    <delete id="deleteJob">
+        delete from legao_job where id IN
+        <foreach collection="list" separator="," close=")" open="(" item="id">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 更改职位 -->
+    <update id="updateJob" parameterType="com.zxq.legao.entity.po.JobPO">
+        update legao_job
+        <set>
+            <if test="name!=null and name!=''">
+                name=#{name},
+            </if>
+            <if test="remark!=null and remark!=''">
+                remark=#{remark},
+            </if>
+        </set>
+        <where>
+            id=#{id};
+        </where>
+    </update>
+    <!--根据id查找职位 -->
+    <select id="selectJobByID" parameterType="int" resultType="com.zxq.legao.entity.vo.JobVO">
+        SELECT
+            legao_job.id,
+            legao_job.`name`,
+            legao_job.remark,
+            legao_job.createDate
+        FROM
+            legao_job
+        where id=#{id};
+    </select>
+
+    <!-- 查找职位 -->
+    <select id="selectJob" parameterType="com.zxq.legao.entity.po.JobPO" resultType="com.zxq.legao.entity.vo.JobVO"
+            resultMap="selectjob_map">
+        select j.id,j.name,j.remark,j.createDate,c.* from legao_job j left join
+        (select JobID,count(id) as job_sum from legao_employ group by JobID) c on c.JobID=j.id
+
+        <if test="name!=null and name!=''">
+            where j.name like '%${name}%'
+        </if>
+
+
+    </select>
+    <resultMap type="com.zxq.legao.entity.vo.JobVO" id="selectjob_map">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="remark" column="remark"/>
+        <result property="createDate" column="createDate"/>
+        <!--一对多的实现 collection association -->
+        <result property="jobAllNum" column="job_sum"/>
+    </resultMap>
+
+    <!-- 判断职位名称是否重复 -->
+    <select id="findJobName" parameterType="com.zxq.legao.entity.po.JobPO" resultType="com.zxq.legao.entity.vo.JobVO">
+        SELECT
+            legao_job.id,
+            legao_job.`name`,
+            legao_job.remark,
+            legao_job.createDate
+        FROM
+            legao_job
+        where name=#{name};
+    </select>
+    <!--查找所有的职位-->
+    <select id="selectAllJobName" resultType="com.zxq.legao.entity.vo.JobVO">
+        SELECT id,name from legao_job
+    </select>
+
+    <select id="selectAllJob" resultType="com.zxq.legao.entity.vo.JobVO">
+        SELECT * from legao_job
+    </select>
+</mapper>

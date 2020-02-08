@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>courseEdit</title>
+    <link href="../css/bootstrap.css" type="text/css" rel="stylesheet"/>
+    <link href="../css/main.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<div id="content_box">
+    <span class="glyphicon glyphicon-circle-arrow-right"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    当前位置：课程管理&nbsp;&gt;&nbsp;修改课程
+    <hr/>
+    <div id="addInfo"></div>
+    <div id="error" style="color:#FF0000;font-size:14px ;height: 20px;"></div>
+    <form id="courseEditform">
+        课程系列:
+        <select class="inputCss" id="seriesID_id" name="seriesID">
+            <option value="">--请选择课程系列--</option>
+            <option th:value="${series.id}" th:each="series:${application.allSeriesName}" th:selected="(${series.id}==${courseEdit.series.id})?true:false">
+                [[${series.name}]]
+            </option>
+        </select>
+        课程:<input name="name" id="course_name" class="inputCss" style="width:200px ;" placeholder="请输入长度不超过20的字符"
+                  maxlength="20" th:value="${courseEdit.name}"/>&nbsp;&nbsp;&nbsp;&nbsp;
+       年龄段：<input name="ageArea" id="course_ageArea" class="inputCss" style="width:200px ;" placeholder="请输入年龄段"
+                  maxlength="20" th:value="${courseEdit.ageArea}"/>
+
+       &nbsp;&nbsp;&nbsp;&nbsp;
+        教具：
+        <input type="text" name="teacherTools" id="course_teacherTools" style="height: 35px;width:200px ;" class="inputCss"
+               placeholder="请输入课程所需要的教具" th:value="${courseEdit.teacherTools}"/>&nbsp;&nbsp;&nbsp;&nbsp;
+
+        </br>
+        </br>
+        课时：
+        <input type="text" name="courseTime" id="course_courseTime" style="height: 35px;width:200px ;" class="inputCss"
+               placeholder="请输入课程所需要的课时" th:value="${courseEdit.courseTime}"/>&nbsp;&nbsp;&nbsp;&nbsp;
+
+        <input type="button" value="添加" class="btn btn-success" id="btn"/>&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="reset" class="btn btn-danger" value="取消"/>
+<!--id-->
+        <input type="hidden" name="id" th:value="${courseEdit.id}"/>
+    </form>
+</div>
+<!-- 判断数据是否符合要求，提交表单的标志 -->
+<input type="hidden" id="submitInfo" value="false"/>
+
+
+</body>
+<script src="js/jquery-1.12.4.js" type="application/javascript" charset="UTF-8"></script>
+<script src="js/common.js" type="application/javascript" charset="UTF-8"></script>
+<script type="text/javascript">
+
+
+    /*判断状态，课程名是否为空*/
+    $("#btn").click(function () {
+        var course_name = $("#course_name").val();
+        var course_teacherTools = $("#course_teacherTools").val();
+        var course_ageArea = $("#course_ageArea").val();
+        var courseTime = $("#course_courseTime").val();
+        var seriesID_id= $("#seriesID_id").val();
+
+        var re = /[`~!@#$%^&*_+<>{}\\/'[\]]/im;
+        var isNum = /^[0-9]+.?[0-9]*$/; //判断字符串是否为数字 //判断正整数 /^[1-9]+[0-9]*]*$/
+
+        if (seriesID_id.trim().length == 0) {
+            $("#error").text("*请选择课程系列");
+        }else if (course_name.trim().length == 0) {
+            $("#error").text("*请输入课程名称");
+        }  else if (re.test(course_name.trim())) {
+            $("#error").text("*课程名称存在`~!@#$%^&*_+<>{}\'[]/等的非法字符");
+        } else if (course_ageArea.trim().length == 0) {
+            $("#error").text("*请输入课程所适合的学员年龄段");
+        } else if (re.test(course_ageArea.trim())) {
+            $("#error").text("*年龄段存在`~!@#$%^&*_+<>{}\'[]/等的非法字符");
+        }  else if (course_teacherTools.trim().length == 0) {
+            $("#error").text("*请输入课程所需要的教具");
+        }else if (courseTime.trim().length == 0) {
+            $("#error").text("*请输入课时");
+        }else if (!isNum.test(courseTime)) {
+            $("#error").text("*课时只允许输入数字");
+        }else {
+            $("#courseEditform").attr("action", "saveCourse");
+            $("#courseEditform").submit();
+        }
+
+    });
+
+
+</script>
+</html>

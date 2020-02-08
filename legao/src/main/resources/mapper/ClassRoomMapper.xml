@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxq.legao.dao.ClassRoomDao">
+    <insert id="insertClassRoom" parameterType="com.zxq.legao.entity.po.ClassRoomPO">
+        INSERT INTO legao_classroom(
+            name,
+            ageArea,
+            responsePersonName
+        ) VALUES(#{name},#{ageArea},#{responsePersonName});
+    </insert>
+    <delete id="deleteClassRoom" parameterType="java.util.List">
+        DELETE FROM legao_classroom WHERE id IN
+        <foreach collection="list" separator="," close=")" open="(" item="id">
+            #{id}
+        </foreach>
+
+    </delete>
+    <update id="updateClassRoom" parameterType="com.zxq.legao.entity.po.ClassRoomPO">
+        UPDATE legao_classroom SET name = #{name},ageArea = #{ageArea},responsePersonName = #{responsePersonName}
+        WHERE id = #{id};
+    </update>
+    <select id="selectClassRoom" parameterType="com.zxq.legao.entity.po.ClassRoomPO"
+            resultType="com.zxq.legao.entity.po.ClassRoomPO">
+        SELECT
+        legao_classroom.id,
+        legao_classroom.`name`,
+        legao_classroom.ageArea,
+        legao_classroom.responsePersonName
+        FROM
+        legao_classroom
+
+
+        <where>
+
+            <if test="name!=null and name!=''">
+                and name like '%${name}%'
+            </if>
+            <if test="ageArea!=null and ageArea!=''">
+                and ageArea = #{ageArea}
+            </if>
+        </where>
+
+    </select>
+    <select id="selectClassRoomByID" parameterType="java.lang.Integer" resultType="com.zxq.legao.entity.vo.ClassRoomVO">
+        SELECT
+            legao_classroom.id,
+            legao_classroom.`name`,
+            legao_classroom.ageArea,
+            legao_classroom.responsePersonName
+        FROM
+            legao_classroom
+        WHERE id = #{id};
+    </select>
+
+    <select id="findAllClassRoomName"  resultType="com.zxq.legao.entity.po.ClassRoomPO">
+        SELECT id,name FROM legao_classroom
+    </select>
+</mapper>

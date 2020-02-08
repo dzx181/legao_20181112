@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxq.legao.dao.ClasstimepackDao">
+    <insert id="insertClasstimepack" parameterType="com.zxq.legao.entity.po.ClasstimepackPO">
+        INSERT INTO legao_classtimepack(
+            legao_classtimepack.name,
+            legao_classtimepack.classTime,
+            legao_classtimepack.price,
+            legao_classtimepack.`priority`,
+            legao_classtimepack.remark
+        ) VALUES(#{name},#{classTime},#{price},#{priority},#{remark});
+    </insert>
+    <delete id="deleteClasstimepack" parameterType="java.util.List">
+        DELETE FROM legao_classtimepack WHERE id IN
+        <foreach collection="list" separator="," close=")" open="(" item="id">
+            #{id}
+        </foreach>
+
+    </delete>
+    <update id="updateClasstimepack" parameterType="com.zxq.legao.entity.po.ClasstimepackPO">
+        UPDATE legao_classtimepack SET name = #{name},classTime = #{classTime},priority = #{priority},remark = #{remark},price = #{price}
+        WHERE id = #{id};
+    </update>
+    <select id="selectClasstimepack" parameterType="com.zxq.legao.entity.po.ClasstimepackPO"
+            resultType="com.zxq.legao.entity.po.ClasstimepackPO">
+        SELECT
+        legao_classtimepack.id,
+        legao_classtimepack.name,
+        legao_classtimepack.classTime,
+        legao_classtimepack.price,
+        legao_classtimepack.`priority`,
+        legao_classtimepack.remark
+        FROM
+        legao_classtimepack
+
+        <where>
+
+            <if test="name!=null and name!=''">
+                and name like '%${name}%'
+            </if>
+
+        </where>
+
+    </select>
+    <select id="selectClasstimepackByID" parameterType="java.lang.Integer" resultType="com.zxq.legao.entity.po.ClasstimepackPO">
+        SELECT legao_classtimepack.id,
+               legao_classtimepack.name,
+               legao_classtimepack.classTime,
+               legao_classtimepack.price,
+               legao_classtimepack.`priority`,
+               legao_classtimepack.remark FROM legao_classtimepack WHERE id = #{id};
+    </select>
+
+    <select id="findAllClasstimepackName" resultType="com.zxq.legao.entity.po.ClasstimepackPO">
+        SELECT id,name,classTime FROM legao_classtimepack
+    </select>
+
+    <select id="selectAllClassTimePack" resultType="com.zxq.legao.entity.po.ClasstimepackPO">
+        SELECT * FROM legao_classtimepack
+    </select>
+
+</mapper>

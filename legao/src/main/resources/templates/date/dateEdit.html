@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>dateEdit</title>
+    <link href="../css/bootstrap.css" type="text/css" rel="stylesheet"/>
+    <link href="../css/main.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<div id="content_box">
+    <span class="glyphicon glyphicon-circle-arrow-right"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    当前位置：时间管理&nbsp;&gt;&nbsp;编辑时间
+    <hr/>
+
+    <div id="error" style="color:#FF0000;font-size:14px ;height: 20px;"></div>
+    <form id="dateEditform">
+        时间：<input type="text" name="timeSection" class="inputCss" style="width:205px;" placeholder="请输入需要设置的时间段"
+                  id="date_timeSection" th:value="${dateEdit.timeSection}"/>&nbsp;&nbsp;&nbsp;&nbsp;
+
+        状态: <select name="status" id="date_status" style="height: 35px;" class="inputCss">
+        <option value="">----全部----</option>
+        <option value="1" th:value="1" th:selected="${dateEdit.status}==1">启用中</option>
+        <option value="2"  th:value="2" th:selected="${dateEdit.status}==2">停用</option>
+    </select>&nbsp;&nbsp;&nbsp;&nbsp;
+        优先级：<input type="text" name="priority" class="inputCss" style="width:205px;" placeholder="请输入需要优先级"
+                   id="date_priority" th:value="${dateEdit.priority}"/>
+        备注 <input type="text" name="remark" class="inputCss" style="width:205px;" placeholder="请输入需要备注"
+                  id="date_remark" th:value="${dateEdit.remark}"/>
+        </br>
+        </br>
+        <input type="hidden" name="id" th:value="${dateEdit.id}"/>
+        <input type="button" value="修改" class="btn btn-success" id="btn"/>&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="reset" class="btn btn-danger" value="取消"/>
+
+    </form>
+</div>
+
+
+</body>
+<script src="js/jquery-1.12.4.js" type="application/javascript" charset="UTF-8"></script>
+<script src="laydate/laydate.js" type="text/javascript"></script>
+<script src="js/common.js" type="application/javascript" charset="UTF-8"></script>
+<script type="text/javascript">
+
+    //时间选择器
+    laydate.render({
+        elem: '#date_timeSection'
+        ,theme: '#8D48F9'//指定元素
+        , trigger: 'click',
+        type: 'time'
+    });
+
+    /*判断状态，时间名是否为空*/
+    $("#btn").click(function () {
+        var date_timeSection = $("#date_timeSection").val();
+        var date_status = $("#date_status").val();
+        var date_remark = $("#date_remark").val();
+        var date_priority = $("#date_priority").val();
+
+        var re = /[`~!@#$%^&*_+<>{}\\/'[\]]/im;
+
+        if (date_timeSection.trim().length == 0) {
+            $("#error").text("*请输入时间段");
+        } else if (date_status.trim().length == 0) {
+            $("#error").text("*该请输入时间状态");
+        }else if (date_priority.trim().length == 0) {
+            $("#error").text("*请输入时间段优先级");
+        }else if (isNaN(date_priority)) {
+            $("#error").text("*时间段优先级的值只能为数字");
+        }  else if (date_remark.trim().length == 0) {
+            $("#error").text("*请输入备注");
+        } else if (re.test(date_remark)) {
+            $("#error").text("*时间人存在`~!@#$%^&*_+<>{}\'[]/等的非法字符");
+        } else {
+            $("#dateEditform").attr("action", "saveDate");
+            $("#dateEditform").submit();
+        }
+
+    });
+
+
+</script>
+</html>

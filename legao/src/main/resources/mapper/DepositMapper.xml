@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxq.legao.dao.DepositDao">
+    <insert id="insertDeposit" parameterType="com.zxq.legao.entity.po.DepositPO">
+        INSERT INTO legao_deposit(
+            legao_deposit.studentName,
+            legao_deposit.adviser,
+            legao_deposit.moneyAmount,
+            legao_deposit.`payType`,
+            legao_deposit.remark
+        ) VALUES(#{studentName},#{adviser},#{moneyAmount},#{payType},#{remark});
+    </insert>
+    <delete id="deleteDeposit" parameterType="java.util.List">
+        DELETE FROM legao_deposit WHERE id IN
+        <foreach collection="list" separator="," close=")" open="(" item="id">
+            #{id}
+        </foreach>
+
+    </delete>
+    <update id="updateDeposit" parameterType="com.zxq.legao.entity.po.DepositPO">
+        UPDATE legao_deposit SET studentName = #{studentName},adviser = #{adviser},moneyAmount = #{moneyAmount},remark = #{remark}
+        WHERE id = #{id};
+    </update>
+    <select id="selectDeposit" parameterType="com.zxq.legao.entity.po.DepositPO"
+            resultType="com.zxq.legao.entity.po.DepositPO">
+        SELECT
+        legao_deposit.id,
+        legao_deposit.studentName,
+        legao_deposit.adviser,
+        legao_deposit.payType,
+        legao_deposit.`moneyAmount`,
+        legao_deposit.remark
+        FROM
+        legao_deposit
+
+        <where>
+
+            <if test="studentName!=null and studentName!=''">
+                and studentName like '%${studentName}%'
+            </if>
+
+        </where>
+
+    </select>
+    <select id="selectDepositByID" parameterType="java.lang.Integer" resultType="com.zxq.legao.entity.po.DepositPO">
+        SELECT legao_deposit.id,
+               legao_deposit.studentName,
+               legao_deposit.adviser,
+               legao_deposit.payType,
+               legao_deposit.`moneyAmount`,
+               legao_deposit.remark FROM legao_deposit WHERE id = #{id};
+    </select>
+
+    <select id="findAllDepositName" resultType="com.zxq.legao.entity.po.DepositPO">
+        SELECT id,moneyAmount,remark FROM legao_deposit
+    </select>
+
+    <select id="selectAllDeposit" resultType="com.zxq.legao.entity.po.DepositPO">
+        SELECT * FROM legao_deposit
+    </select>
+</mapper>
+

@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>contractAdd</title>
+    <link href="css/bootstrap.css" type="text/css" rel="stylesheet"/>
+    <link href="css/main.css" type="text/css" charset="UTF-8" rel="stylesheet"/>
+    <style>
+        #myInput {
+            background-image: url('https://static.runoob.com/images/mix/searchicon.png'); /* 搜索按钮 */
+            background-position: 10px 12px; /* 定位搜索按钮 */
+            background-repeat: no-repeat; /* 不重复图片 */
+            width: 100%;
+            font-size: 16px;
+            padding: 12px 20px 12px 40px;
+            border: 1px solid #ddd;
+            margin-bottom: 12px;
+        }
+    </style>
+
+</head>
+<body>
+
+<div
+     id="content_box">
+    <div id="schedule-box" class="boxshaw hidden "></div>
+    <span class="glyphicon glyphicon-circle-arrow-right"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    当前位置：合同管理&nbsp;&gt;&nbsp;添加合同
+    <hr/>
+    <!--添加成功字样-->
+    <div id="addInfo"></div>
+    <div id="error" style="color:#FF0000;font-size:14px ;height: 20px;">[[${msg}]]</div>
+    <form id="contractform">
+        <table id="contract_tab" style="width: 100%">
+            <tr>
+                <td>校区：</td>
+
+                <td> <select class="inputCss" id="schoolArea_id" name="schoolAreaId">
+                <option value="">---请选择校区----</option>
+                <option th:value="${schoolArea.id}" th:each="schoolArea:${application.allSchoolArea}">
+                    [[${schoolArea.name}]]
+                </option>
+
+            </select>
+                </td>&nbsp;&nbsp;
+                <td>课时包名称：</td>
+                <td>
+                    <select class="inputCss" id="classtimepack_id" name="classPackageId">
+                        <option value="">--请选择课时包--</option>
+                        <option th:value="${classtimepack.id}" th:each="classtimepack:${application.allClasstimepack}">
+                            [[${classtimepack.name}]]
+                        </option>
+
+                    </select>
+                </td>
+
+
+                <td>订金：</td>
+                <td>
+                    <select class="inputCss" id="deposit_id" name="depositId">
+                        <option value="0">--请选择订金--</option>
+                        <option th:value="${deposit.id}" th:each="deposit:${application.allDeposit}">
+                            [[${deposit.moneyAmount}]]<span style="color: red;">&nbsp;[[${deposit.remark}]]</span>
+                        </option>
+                    </select>
+                </td>
+
+
+
+            </tr>
+            <tr style="height: 10px;">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>课时：</td>
+                <td><input type="text" name="classTime" class="inputCss" style="width:205px;" placeholder="请输入课时"
+                           id="contract_allClassTime"/></td>
+                <td>学员：</td>
+                <td >
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+                        添加学员<span id="select_info" style="color: red;"></span>
+                    </button>
+                    <!-- Modal -->
+                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" >
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title" id="myModalLabel">学员列表</h4>
+                                </div>
+                                <div class="modal-body" style="width:598px;height:450px;overflow-y:scroll;" >
+                                    <input type="text" id="myInput" onkeyup="myFunction()" placeholder="搜索...">
+                                    <table cellspacing="0" cellpadding="" class="table table-hover table-striped table-bordered" style="text-align: center;"
+                                           id="myTable">
+                                        <tr id="tr_th">
+                                            <th><input type="checkbox" name="caption" value="0" id="checkAll"/></th>
+                                            <th>学员</th>
+                                            <th>性别</th>
+                                            <th>电话</th>
+                                        </tr>
+                                        <tr th:each="students:${application.allStudentNames}">
+                                            <td><input type="checkbox" name="caption"
+                                                       th:id="'box_'+${students.id}" th:value="${students.id}"/></td>
+                                            <td>[[${students.name}]]</td>
+                                            <td>[[${students.sex}]]</td>
+                                            <td>[[${students.telphone}]]</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                    <button type="button" class="btn btn-primary" id="selectStudentBtns">选择</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </td>
+
+                <td>合同编号：</td>
+                <td><input type="text" name="contractCode" class="inputCss" style="width:205px;" placeholder="请输入合同编号"
+                           maxlength="20" id="contract_contractCode"/></td>
+
+
+
+
+            </tr>
+            <tr style="height: 10px;">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>签约日期：</td>
+                <td><input type="text" name="signDate" class="inputCss" style="width:205px;" placeholder="请输入合同的签约日期"
+                           id="contract_signDate"/></td>
+                <td>赠送课时：</td>
+                <td><input type="text" name="presentationClassTime" class="inputCss" style="width:205px;"
+                           placeholder="请输入赠送课时" id="contract_presentationClassTime"/></td>
+                <td>起始日期：</td>
+                <td><input type="text" name="startTime" class="inputCss" style="width:205px;" placeholder="请输入合同起始日期"
+                           id="contract_startTime"/></td>
+
+
+            </tr>
+            <tr style="height: 10px;">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>终止日期：</td>
+                <td><input type="text" name="endTime" class="inputCss" style="width:205px;" placeholder="请输入合同终止日期"
+                           id="contract_endTime"/>&nbsp;
+                </td>
+
+                <td>价&nbsp;格：</td>
+                <td><input type="text" name="price" class="inputCss" style="width:205px;" placeholder="请输入价格"
+                           id="contract_price"/></td>
+
+                <td>折&nbsp;扣：</td>
+                <td><input type="text" name="discount" class="inputCss" style="width:205px;"
+                           placeholder="请输入折扣" id="contract_discount"/></td>
+
+
+
+            </tr>
+            <tr style="height: 10px;">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>实际支付：</td>
+                <td><input type="text" name="actPay" class="inputCss" style="width:205px;"
+                           placeholder="请输入实际支付" id="contract_actPay"/></td>
+                <td>备注：</td>
+                <td><input type="text" name="remark" class="inputCss" style="width:205px;" placeholder="请输入备注"
+                           id="contract_remark"/></td>
+                <td>业绩所属：</td>
+                <td><input type="text" name="belongOne" class="inputCss" style="width:205px;" placeholder="请输入业绩所属"
+                           id="contract_belongOne"/></td>
+
+
+
+            </tr>
+
+            <tr style="height: 10px;">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>支付方式：</td>
+                <td><input type="text" name="payType" class="inputCss" style="width:205px;" placeholder="请输入支付方式"
+                           id="contract_payType"/></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr style="height: 10px;">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+
+            <td colspan="5" align="center"><input type="button" value="添加" class="btn btn-success" id="addbtn"/>&nbsp;&nbsp;&nbsp;&nbsp;
+                <input type="reset" name="cancel" class="btn btn-danger" value="取消"/></td>
+        </table>
+        <!--隐藏域-->
+        <input type="hidden" name="id"/>
+        <input type="hidden" name="studentId" id="contract_studentName" />
+    </form>
+    <!-- 判断是否添加成功 -->
+    <input type="hidden" th:value="${type}" id="typeInfo"/>
+</div>
+
+<script src="js/jquery-1.12.4.js" type="application/javascript" charset="UTF-8"></script>
+<script src="js/bootstrap.js" type="application/javascript" charset="UTF-8"></script>
+<script src="laydate/laydate.js" type="text/javascript"></script>
+<script src="js/common.js" type="application/javascript" charset="UTF-8"></script>
+<script type="text/javascript">
+    $("#classtimepack_id").change(function () {
+        var that = this;
+        if (!that.value){
+            return;
+        }
+        //获取课程列表
+        $.ajax("/selectPackByPackId",// 发送请求的URL字符串。
+            {
+                dataType: "json", // 预期服务器返回的数据类型。
+                type: "post", //  请求方式 POST或GET
+                contentType: "application/json", //  发送信息至服务器时的内容编码类型
+                // 发送到服务器的数据。
+                data: JSON.stringify({
+                    id: that.value
+                }),
+                async: true, // 默认设置下，所有请求均为异步请求。如果设置为false，则发送同步请求
+                // 请求成功后的回调函数。
+                success: function (data) {
+                    if (data) {
+                        $("#contract_price").val(data.price)
+                        $("#contract_allClassTime").val(data.classTime);
+                    }else {
+                        $("#contract_price").val("")
+                        $("#contract_allClassTime").val("")
+
+                    }
+                },
+                // 请求出错时调用的函数
+                error: function () {
+                    alert("数据发送失败");
+                }
+            });
+    });
+    $("#selectStudentBtns").click(function () {
+        var chk_value =[];//定义一个数组
+        var studentListval = "";
+
+        $('input[id^="box_"]:checked').each(function(){//遍历每一个名字为box_开头的复选框，其中选中的执行函数
+            chk_value.push($(this).val());//将选中的值添加到数组chk_value中
+            studentListval += (","+$(this).val());
+        });
+        if (chk_value.length > 1){
+            alert("合同中只能有一个学员")
+        }
+        $("#select_info").text("(已选"+chk_value.length+"个学员)");
+        $("#contract_studentName").val(chk_value);
+    });
+    //搜索学员
+    function myFunction() {
+        // 声明变量
+        var input, filter, table, tr, td, i;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("myTable");
+        tr = table.getElementsByTagName("tr");
+
+        // 循环表格每一行，查找匹配项
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[1];
+            if (td) {
+                if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+
+    /* type */
+    $(function () {
+        if ($("#typeInfo").val() == 'yes') {
+            $("#addInfo").html('<h3 style="color: green;height: 30px;">添加成功</h3>');
+        } else if ($("#typeInfo").val() == 'no') {
+            $("#addInfo").html('<h3 style="color: green;height: 30px;">添加失败</h3>');
+        }
+        /* 定时清除添加成功字样 */
+        setTimeout(function () {
+            $("#addInfo").text('');
+        }, 5000);
+
+        //日期插件
+        laydate.render({
+            elem: '#contract_startTime',
+            theme: '#8D48F9'//指定元素
+            , trigger: 'click'
+        });
+        laydate.render({
+            elem: '#contract_signDate',
+            theme: '#8D48F9'//指定元素
+            , trigger: 'click'
+        });
+        laydate.render({
+            elem: '#contract_endTime',
+            theme: '#8D48F9'//指定元素
+            , trigger: 'click'
+        });
+    });
+    /* 全选和反选*/
+    $("#checkAll").click(function () {
+
+        $("input[id^='box_']").prop("checked", this.checked);
+    });
+
+    $("#addbtn").click(function () {
+
+        //获取表单值
+        var classtimepack_id = $("#classtimepack_id").val();
+        var contract_contractCode = $("#contract_contractCode").val();
+        var contract_studentName = $("#contract_studentName").val();
+        var schoolArea_id = $("#schoolArea_id").val();
+       var  contract_remark = $("#contract_remark").val();
+
+        var contract_signDate = $("#contract_signDate").val();
+        var contract_presentationClassTime = $("#contract_presentationClassTime").val();
+        var contract_startTime = $("#contract_startTime").val();
+        var contract_endTime = $("#contract_endTime").val();
+        var contract_price = $("#contract_price").val();
+        //为字段需要赋默认值
+        var contract_discount = $("#contract_discount").val();
+        var contract_actPay = $("#contract_actPay").val();
+        var contract_belongOne = $("#contract_belongOne").val();
+        var contract_payType = $("#contract_payType").val();
+        var contract_allClassTime = $("#contract_allClassTime").val();
+
+        //创建正则模板
+        var re = /[`~!@#$%^&*_+<>{}\\/'[\]]/im;
+        var isNum = /^[0-9]+.?[0-9]*$/; //判断字符串是否为数字 //判断正整数 /^[1-9]+[0-9]*]*$/
+        var timeFlag = new Date(contract_startTime) >new Date(contract_endTime);
+
+         if (schoolArea_id.trim() == "") {
+            $("#error").text("*校区不能为空，请补充完整");
+        }else if (classtimepack_id.trim() == "") {
+            $("#error").text("*请选择课时包");
+        } else if (contract_contractCode.trim() == "") {
+            $("#error").text("*合同编号不能为空，请补充完整");
+        } else if (re.test(contract_contractCode.trim())) {
+            $("#error").text("*合同编号存在`~!@#$%^&*_+<>{}\'[]/等的非法字符");
+        } else if (contract_studentName.trim() == "") {
+            $("#error").text("*学员不能为空，请补充完整");
+        } else if (contract_signDate.trim() == "") {
+            $("#error").text("*签约日期不能为空，请补充完整");
+        } else if (re.test(contract_signDate.trim())) {
+            $("#error").text("*签约日期存在`~!@#$%^&*_+<>{}\'[]/等的非法字符");
+        } else if (contract_startTime.trim() == "") {
+            $("#error").text("*请选择合同起始时间");
+        } else if (contract_endTime.trim() == "") {
+            $("#error").text("*请选择合同结束时间");
+        } else if (contract_price.trim() == "") {
+            $("#error").text("*价格不能为空");
+        }else if (!isNum.test(contract_price.trim())) {
+            $("#error").text("*价格只能为数字");
+        }else if (contract_actPay.trim() == "") {
+            $("#error").text("*实际支付不能为空");
+        }else if (!isNum.test(contract_actPay.trim())) {
+            $("#error").text("*实际支付只能为数字");
+        }else if (contract_payType.trim() == "") {
+            $("#error").text("*支付方式不能为空");
+        }else if (!isNum.test(contract_allClassTime.trim())) {
+            $("#error").text("*课时只能为数字");
+        }else if (contract_presentationClassTime.trim() == "") {
+            $("#error").text("*赠送课时请输入具体值，若无请输入0");
+        } else if (!isNum.test(contract_presentationClassTime.trim())) {
+            $("#error").text("*赠送课时只能为数字");
+        }else if(timeFlag){
+             $("#error").text("*合同起始时间不能大于结束时间");
+         }  else {
+             if (contract_remark.trim() == "") {
+                 $("#contract_remark").val("无");
+             }
+            if (contract_discount.trim() == "") {
+                $("#contract_discount").val("无");
+            }
+            if (contract_belongOne.trim() == "") {
+                $("#contract_belongOne").val("无");
+            }
+            if (contract_allClassTime.trim() == "") {
+                $("#contract_allClassTime").val("0");
+            }
+
+            $("#contractform").attr("action", "insertContract");
+            $("#contractform").submit();
+        }
+
+    });
+
+</script>
+
+</body>
+</html>

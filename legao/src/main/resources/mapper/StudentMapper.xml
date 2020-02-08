@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zxq.legao.dao.StudentDao">
+    <insert id="insertStudent" parameterType="com.zxq.legao.entity.po.StudentPO">
+        INSERT INTO legao_student(legao_student.nickName,
+                                  legao_student.`name`,
+                                  legao_student.parentName,
+                                  legao_student.parentRelat,
+                                  legao_student.sex,
+                                  legao_student.telphone,
+                                  legao_student.weChatID,
+                                  legao_student.education,
+                                  legao_student.birthday,
+                                  legao_student.createDate,
+                                  legao_student.sparePhone,
+                                  legao_student.markPeople,
+                                  legao_student.advisor,
+                                  legao_student.area,
+                                  legao_student.willDate,
+                                  legao_student.baseSituation,
+                                  legao_student.`status`,
+                                  legao_student.source,
+                                  legao_student.importanceGrade,
+                                  legao_student.teacherName,
+                                  legao_student.schoolAreaID,
+                                  legao_student.followID,
+                                  legao_student.stuAge)
+        VALUES (#{nickName},
+                #{name},
+                #{parentName},
+                #{parentRelat},
+                #{sex},
+                #{telphone},
+                #{weChatID},
+                #{education},
+                #{birthday},
+                now(),
+                #{sparePhone},
+                #{markPeople},
+                #{advisor},
+                #{area},
+                #{willDate},
+                #{baseSituation},
+                #{status},
+                #{source},
+                #{importanceGrade},
+                #{teacherName},
+                #{schoolAreaID},
+                #{followID},
+                #{stuAge});
+    </insert>
+    <delete id="deleteStudent" parameterType="java.util.List">
+        DELETE FROM legao_student WHERE id IN
+        <foreach collection="list" separator="," close=")" open="(" item="id">
+            #{id}
+        </foreach>
+
+    </delete>
+    <update id="updateStudent" parameterType="com.zxq.legao.entity.po.StudentPO">
+        UPDATE legao_student
+        SET
+            legao_student.nickName        = #{nickName},
+            legao_student.`name`          = #{name},
+            legao_student.parentName      = #{parentName},
+            legao_student.parentRelat     = #{parentRelat},
+            legao_student.sex             = #{sex},
+            legao_student.telphone        = #{telphone},
+            legao_student.weChatID        = #{weChatID},
+            legao_student.education       = #{education},
+            legao_student.birthday        = #{birthday},
+            legao_student.sparePhone      = #{sparePhone},
+            legao_student.markPeople      = #{markPeople},
+            legao_student.advisor         = #{advisor},
+            legao_student.area            = #{area},
+            legao_student.willDate        = #{willDate},
+            legao_student.baseSituation   = #{baseSituation},
+            legao_student.`status`        = #{status},
+            legao_student.source          = #{source},
+            legao_student.importanceGrade = #{importanceGrade},
+            legao_student.teacherName     = #{teacherName},
+            legao_student.schoolAreaID    = #{schoolAreaID},
+            legao_student.followID        = #{followID}
+        WHERE id = #{id};
+    </update>
+    <select id="selectStudent"
+            resultType="com.zxq.legao.entity.vo.StudentVO" statementType="STATEMENT" resultMap="select_studentMap">
+
+        SELECT
+        id,
+        <foreach collection="fields" separator="," item="fields">${fields}</foreach>
+
+        FROM
+        legao_student
+
+        <where>
+            <if test="studentPO.name!=null and studentPO.name!=''">
+                and name like '%${studentPO.name}%'
+            </if>
+            <if test="studentPO.telphone!=null and studentPO.telphone!=''">
+                and telphone like '%${studentPO.telphone}%'
+            </if>
+            <if test="studentPO.importanceGrade!=null and studentPO.importanceGrade!=''">
+                and importanceGrade = ${studentPO.importanceGrade}
+            </if>
+            <if test="studentPO.schoolAreaID!=null and studentPO.schoolAreaID!=''">
+                and schoolAreaID=${studentPO.schoolAreaID}
+            </if>
+            <if test="studentPO.sex!=null and studentPO.sex!=''">
+                and sex = '${studentPO.sex}'
+            </if>
+            <if test="studentPO.status!=null and studentPO.status!=''">
+                and status=${studentPO.status}
+            </if>
+            <if test="studentPO.source!=null and studentPO.source!=''">
+                and source like '%${studentPO.source}%'
+            </if>
+            <if test="studentPO.followID!=null and studentPO.followID!=''">
+                and followID=${studentPO.followID}
+            </if>
+
+        </where>
+        <if test="studentPO.ifImportanceGradeOrder!=null and studentPO.ifImportanceGradeOrder!=''">
+            <if test="studentPO.ifImportanceGradeOrder=='asc'">
+                ORDER BY importanceGrade
+            </if>
+            <if test="studentPO.ifImportanceGradeOrder=='desc'">
+                ORDER BY importanceGrade desc
+            </if>
+        </if>
+    </select>
+    <select id="selectStudentByID" parameterType="java.lang.Integer" resultType="com.zxq.legao.entity.vo.StudentVO"
+            resultMap="select_studentMap">
+
+        SELECT
+            legao_student.id,
+            legao_student.nickName,
+            legao_student.`name`,
+            legao_student.parentName,
+            legao_student.parentRelat,
+            legao_student.sex,
+            legao_student.telphone,
+            legao_student.weChatID,
+            legao_student.education,
+            legao_student.birthday,
+            legao_student.createDate,
+            legao_student.sparePhone,
+            legao_student.markPeople,
+            legao_student.advisor,
+            legao_student.area,
+            legao_student.willDate,
+            legao_student.baseSituation,
+            legao_student.`status`,
+            legao_student.source,
+            legao_student.importanceGrade,
+            legao_student.teacherName,
+            legao_student.schoolAreaID,
+            legao_student.followID,
+            legao_student.stuAge
+        FROM
+            legao_student
+        WHERE id = #{id}
+    </select>
+    <resultMap id="select_studentMap" type="com.zxq.legao.entity.vo.StudentVO">
+        <id column="id" property="id"></id>
+        <result column="nickName" property="nickName"></result>
+        <result column="name" property="name"></result>
+        <result column="parentName" property="parentName"></result>
+        <result column="parentRelat" property="parentRelat"></result>
+        <result column="sex" property="sex"></result>
+        <result column="telphone" property="telphone"></result>
+        <result column="weChatID" property="weChatID"></result>
+        <result column="education" property="education"></result>
+        <result column="birthday" property="birthday"></result>
+        <result column="createDate" property="createDate"></result>
+        <result column="sparePhone" property="sparePhone"></result>
+        <result column="markPeople" property="markPeople"></result>
+        <result column="advisor" property="advisor"></result>
+        <result column="area" property="area"></result>
+        <result column="willDate" property="willDate"></result>
+        <result column="baseSituation" property="baseSituation"></result>
+        <result column="status" property="status"></result>
+        <result column="source" property="source"></result>
+        <result column="importanceGrade" property="importanceGrade"></result>
+        <result column="teacherName" property="teacherName"></result>
+        <result column="followID" property="follow"></result>
+        <result column="stuAge" property="stuAge"></result>
+        <association property="schoolAreaID" column="schoolAreaID"
+                     select="com.zxq.legao.dao.SchoolAreaDao.selectSchoolAreaByID"
+                     javaType="com.zxq.legao.entity.vo.SchoolAreaVO"></association>
+        <association property="followID" column="followID" javaType="com.zxq.legao.entity.vo.EmployVO"
+                     select="com.zxq.legao.dao.EmployDao.selectEmployById"></association>
+
+    </resultMap>
+
+    <select id="selectAllStudentName" resultType="com.zxq.legao.entity.vo.StudentVO">
+        SELECT
+            id,name,sex,telphone
+        FROM
+            legao_student
+    </select>
+
+<select id="selectStudentNameByID" resultType="com.zxq.legao.entity.po.StudentPO" parameterType="java.lang.Integer">
+    select name,sex from
+        legao_student
+where id = #{id}
+</select>
+</mapper>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>employList</title>
+    <link href="css/bootstrap.css" type="text/css" rel="stylesheet"/>
+    <link href="css/main.css" type="text/css" rel="stylesheet"/>
+    <link href="css/paging.css" type="text/css" rel="stylesheet"/>
+    <style>
+
+
+    </style>
+</head>
+<body>
+<div id="content_box" style="display:flex;flex-direction:column;">
+    <div style="width: 80%">
+    <span class="glyphicon glyphicon-circle-arrow-right"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    当前位置：员工管理&nbsp;&gt;&nbsp;员工查询
+
+    <a style="cursor: pointer;text-decoration: none;color: #000000;float: right;" href="#"><span
+            class="glyphicon glyphicon-print"></span>&nbsp;打印</a>
+
+    <a style="cursor: pointer;text-decoration: none;color: #000000;float: right;margin-right: 50px;" href="/employExportExcel"><span
+            class="glyphicon glyphicon-export"></span>&nbsp;导出</a>
+</div>
+    <hr/>
+    <form action="" id="employform">
+
+        员工姓名：<input name="name" id="name" style="height: 35px;" class="inputCss"
+                    th:value="${blurEmploy}==null? '':${blurEmploy.name}"/>&nbsp;&nbsp;
+        联系电话：<input name="telphone" id="telphone" style="height: 35px;" class="inputCss"
+                    th:value="${blurEmploy}==null? '':${blurEmploy.telphone}"/>&nbsp;&nbsp;
+        性别：<select name="sex" id="sex" style="height: 35px;" class="inputCss"
+                   th:value="${blurEmploy}==null? '':${blurEmploy.sex} ">
+        <option value="" th:selected="${blurEmploy}==null? true:false">----全部----</option>
+        <option value="男" th:selected="${blurEmploy}==null? false:(${blurEmploy.sex}=='男'?true:false)">男</option>
+        <option value="女" th:selected="${blurEmploy}==null? false:(${blurEmploy.sex}=='女'?true:false)">女</option>
+    </select>&nbsp;&nbsp;&nbsp;&nbsp;
+        员工状态：<select name="status" id="status" style="height: 35px;" class="inputCss">
+        <option value="" th:selected="${blurEmploy}==null? true:false">----全部----</option>
+        <option value="1" th:selected="${blurEmploy}==null? false:(${blurEmploy.status}==1?true:false)">在职</option>
+        <option value="2" th:selected="${blurEmploy}==null? false:(${blurEmploy.status}==2?true:false)">离职</option>
+        <option value="3" th:selected="${blurEmploy}==null? false:(${blurEmploy.status}==3?true:false)">其他
+        </option>
+    </select>&nbsp;&nbsp;&nbsp;&nbsp;
+
+        职位：
+        <select name="jobID" id="jobID" style="height: 35px;" class="inputCss"
+                th:value="${blurEmploy}==null? '':${blurEmploy.jobID} ">
+            <option value="" th:selected="${blurEmploy}==null? true:false">----全部----</option>
+            <option th:value="${job.id}"
+                    th:selected="${blurEmploy}==null? false:(${blurEmploy.jobID}==${job.id}?true:false)"
+                    th:each="job:${application.allJobName}">[[${job.name}]]
+            </option>
+        </select>&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="button" value="搜索" class="btn btn-success" id="selectEmploy"/>&nbsp;
+        <input type="button" class="btn btn-danger" value="删除" id="dropEmploy" th:if="${session.user.status}==1"/>
+
+        <br/><br/>
+        <table cellspacing="0" cellpadding="" class="table table-hover table-striped table-bordered" style="text-align: center;"
+               id="employ_tab">
+            <tr id="tr_th">
+                <th><input type="checkbox" name="caption" value="0" id="checkAll"/></th>
+                <!--遍历标题-->
+                <th th:each="field:${FieldZH}">
+
+                    <span>[[${field}]]</span>
+
+                </th>
+                <th th:if="${session.user.status}==1">操作</th>
+
+                <!--遍历具体值-->
+            <tr th:each="employ:${employVOList}">
+                <td><input type="checkbox" name="caption"
+                           th:id="'box_'+${employ.id}" th:value="${employ.id}"/></td>
+                <td th:if="${employ.name}!=null">
+                    [[${employ.name}]]
+                </td>
+                <td th:if="${employ.sex}!=null ">[[${employ.sex}]]</td>
+
+                <td th:if="${employ.telphone}!=null"> [[${employ.telphone}]]</td>
+                <td th:if="${employ.birthday}!=null">
+                    <span th:text="${#dates.format(employ.birthday,'yyyy年MM月dd日')}"></span></td>
+                <td th:if="${employ.entryDate}!=null">
+                    <span th:text="${#dates.format(employ.entryDate,'yyyy年MM月dd日')}"></span></td>
+                <td th:if="${employ.jobID}!=null ">
+                    <span th:if="${employ.jobVO}!=null ">[[${employ.jobVO.name}]]</span>
+                    <span th:if="${employ.jobVO} ==null ">该职位已被删除</span>
+                </td>
+
+                <td th:if="${employ.basicSalary}!=null ">[[${employ.basicSalary}]]</td>
+                <td th:if="${employ.fullWork}!=null ">[[${employ.fullWork}]]</td>
+                <td th:if="${employ.eatAllow}!=null ">[[${employ.eatAllow}]]</td>
+                <td th:if="${employ.classPay}!=null ">[[${employ.classPay}]]</td>
+                <td th:if="${employ.allClassTime}!=null ">[[${employ.allClassTime}]]</td>
+                <td th:if="${employ.extraPay}!=null ">[[${employ.extraPay}]]</td>
+                <td th:if="${employ.area}!=null ">[[${employ.area}]]</td>
+                <td th:if="${employ.status}!=null ">
+                    <span th:if="${employ.status}==1">在职</span>
+
+                    <span th:if="${employ.status}==2">离职</span>
+
+                    <span th:if="${employ.status}==3">其他</span>
+
+                </td>
+                <td th:if="${session.user.status}==1"><a th:href="'editEmploy?employId='+${employ.id}"><span
+                        class="glyphicon glyphicon-pencil"></span></a>
+                </td>
+            </tr>
+        </table>
+        <input type="hidden" name="ifImportanceGradeOrder" id="ifImportanceGradeOrder">
+    </form>
+    <!--分页元素-->
+    <div class="box" id="box" style="align-self:center;"></div>
+    <!--添加表单提交标志-->
+    <form id="pageForm" style="display: none">
+        <input name="name" th:value="${blurEmploy}==null? '':${blurEmploy.name}"/>&nbsp;&nbsp;
+        <input name="telphone" th:value="${blurEmploy}==null? '':${blurEmploy.telphone}"/>&nbsp;&nbsp;
+        <input name="sex" th:value="${blurEmploy}==null? '':${blurEmploy.sex} "/>
+        <input name="status" th:value="${blurEmploy}==null? '':${blurEmploy.status} "/>p;&nbsp;
+        <input name="jobID" th:value="${blurEmploy}==null? '':${blurEmploy.jobID} "/>
+        <input type="text" id="pages" name="page"/>
+
+        <input type="button" id="btn" value="tijiao"/>
+        <!--传入分页的参数-->
+        <input type="text" id="actionName" value="selectEmploy"/>
+    </form>
+</div>
+    <script src="js/jquery-1.12.4.js" type="application/javascript" charset="UTF-8"></script>
+    <script src="js/bootstrap.js" type="application/javascript" charset="UTF-8"></script>
+    <script src="js/paging.js" type="application/javascript"></script>
+    <script src="js/common.js" type="application/javascript" charset="UTF-8"></script>
+    <script type="text/javascript" th:inline="javascript">
+
+        /*提交查询*/
+        $("#selectEmploy").click(function () {
+            $("#employform").attr("action", "selectEmploy");
+            $("#employform").submit();
+        });
+        /*提交删除*/
+        $("#dropEmploy").click(function () {
+            var chex = $("input[id^='box_']:checked");
+            if (chex.length == 0) {
+                alert("请选择你要删除的员工");
+            } else {
+                if (confirm("确定要删除该员工吗？")) {
+                    $("#employform").attr("action", "deleteEmploys");
+                    $("#employform").submit();
+                }
+            }
+
+        });
+
+        /* 全选和反选*/
+        $("#checkAll").click(function () {
+
+            $("input[id^='box_']").prop("checked", this.checked);
+        });
+
+        //分页逻辑
+        var setTotalCount = [[${pageInfo.total}]];
+        var spageNum = [[${pageInfo.pages}]];
+        var initPageNos = [[${pageInfo.pageNum}]]
+        $('#box').paging({
+            initPageNo: initPageNos, // 初始页码
+            totalPages: spageNum, //总页数
+            totalCount: '合计 ' + setTotalCount + ' 条数据', // 条目总数
+            slideSpeed: 600, // 缓动速度。单位毫秒
+            jump: true, //是否支持跳转
+            callback: function (page) { // 回调函数
+                //给标志赋值
+                $("#pages").val(page);
+            }
+        })
+
+
+    </script>
+
+</body>
+</html>

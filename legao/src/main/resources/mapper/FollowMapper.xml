@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.zxq.legao.dao.FollowDao">
+    <insert id="insertFollow" parameterType="com.zxq.legao.entity.po.FollowPO">
+        INSERT INTO legao_follow(
+        legao_follow.studentName,
+        legao_follow.advisor,
+        legao_follow.date,
+        legao_follow.`mode`,
+        legao_follow.content
+        ) VALUES(#{studentName},#{advisor},now(),#{mode},#{content});
+    </insert>
+    <delete id="deleteFollow" parameterType="java.util.List">
+        DELETE FROM legao_follow WHERE id IN
+        <foreach collection="list" separator="," close=")" open="(" item="id">
+            #{id}
+        </foreach>
+
+    </delete>
+    <update id="updateFollow" parameterType="com.zxq.legao.entity.po.FollowPO">
+        UPDATE legao_follow SET studentName = #{studentName},advisor = #{advisor},mode = #{mode},content = #{content}
+        WHERE id = #{id};
+    </update>
+    <select id="selectFollow" parameterType="com.zxq.legao.entity.po.FollowPO"
+            resultType="com.zxq.legao.entity.po.FollowPO">
+        SELECT
+        legao_follow.id,
+        legao_follow.studentName,
+        legao_follow.advisor,
+        legao_follow.date,
+        legao_follow.`mode`,
+        legao_follow.content
+        FROM
+        legao_follow
+
+        <where>
+
+            <if test="advisor!=null and advisor!=''">
+                and advisor like '%${advisor}%'
+            </if>
+            <if test="studentName!=null and studentName!=''">
+                and studentName like '%${studentName}%'
+            </if>
+        </where>
+
+    </select>
+    <select id="selectFollowByID" parameterType="java.lang.Integer" resultType="com.zxq.legao.entity.po.FollowPO">
+        SELECT legao_follow.id,
+        legao_follow.studentName,
+        legao_follow.advisor,
+        legao_follow.date,
+        legao_follow.`mode`,
+        legao_follow.content FROM legao_follow WHERE id = #{id};
+    </select>
+
+    <select id="findAllFollowName" resultType="com.zxq.legao.entity.po.FollowPO">
+        SELECT id,advisor FROM legao_follow
+    </select>
+</mapper>

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxq.legao.dao.RelationDao">
+    <insert id="insertBatchRelation">
+        INSERT INTO legao_relation(
+        legao_relation.`scheduleID`,
+        legao_relation.studentID,
+        legao_relation.signInStatus,
+        legao_relation.modifyPerson,
+        legao_relation.createDate,
+        legao_relation.lastModifyTime
+        )
+        VALUES
+        <foreach collection="list" item="relation" separator=",">
+            (
+            #{schedule.id},
+            #{relation},
+            2,
+            #{schedule.modifyPerson},
+            now(),
+             now())
+        </foreach>
+    </insert>
+    <insert id="insertRelation" parameterType="com.zxq.legao.entity.po.RelationPO">
+        INSERT INTO legao_relation(legao_relation.id,
+                                   legao_relation.`scheduleID`,
+                                   legao_relation.studentID,
+                                   legao_relation.signInStatus,
+                                   legao_relation.modifyPerson)
+        VALUES (#{id},
+                #{scheduleID},
+                #{studentID},
+                #{signInStatus},
+                #{modifyPerson});
+    </insert>
+    <delete id="deleteRelation" parameterType="java.lang.Integer">
+        DELETE
+        FROM legao_relation
+        WHERE id IN
+        <foreach collection="list" item="relation" separator="," open="(" close=")">
+            #{relation}
+        </foreach>
+
+    </delete>
+    <update id="updateRelation" parameterType="com.zxq.legao.entity.po.RelationPO">
+        UPDATE legao_relation
+        SET
+            id           = #{id},
+            scheduleID   = #{scheduleID},
+            studentID    = #{studentID},
+            signInStatus = #{signInStatus},
+            modifyPerson = #{modifyPerson}
+        WHERE id = #{id};
+    </update>
+    <update id="updateBatchRelation">
+
+          UPDATE legao_relation
+          SET
+          signInStatus = #{relationPO.signInStatus},
+          modifyPerson = #{relationPO.modifyPerson}
+          WHERE id = #{caption}
+
+
+    </update>
+    <select id="selectRelation"
+            resultType="com.zxq.legao.entity.vo.RelationVO" resultMap="select_relationMap">
+
+        SELECT
+        legao_relation.id,
+        legao_relation.scheduleID,
+        legao_relation.studentID,
+        legao_relation.signInStatus,
+        legao_relation.lastModifyTime,
+        legao_relation.modifyPerson
+        FROM
+        legao_relation
+        <where>
+            <if test="studentID!=null and studentID!=''">
+                and studentID = #{studentID}
+            </if>
+            <if test="lastModifyTimeStr!=null and lastModifyTimeStr!=''">
+                and lastModifyTime = #{lastModifyTimeStr}
+            </if>
+
+        </where>
+
+    </select>
+    <select id="selectRelationByScheduleID" parameterType="java.lang.Integer" resultType="com.zxq.legao.entity.vo.RelationVO"
+            resultMap="select_relationMap">
+        SELECT
+            legao_relation.id,
+            legao_relation.scheduleID,
+            legao_relation.studentID,
+            legao_relation.signInStatus,
+            legao_relation.lastModifyTime,
+            legao_relation.modifyPerson
+        FROM
+            legao_relation
+        WHERE scheduleID = #{scheduleID}
+    </select>
+    <resultMap id="select_relationMap" type="com.zxq.legao.entity.vo.RelationVO">
+        <id column="id" property="id"></id>
+        <result column="signInStatus" property="signInStatus"></result>
+        <result column="lastModifyTime" property="lastModifyTime"></result>
+        <result column="modifyPerson" property="modifyPerson"></result>
+        <association property="schedule" column="scheduleID"
+                     select="com.zxq.legao.dao.ScheduleDao.selectScheduleByID"
+                     javaType="com.zxq.legao.entity.vo.SchoolAreaVO"></association>
+        <association property="student" column="studentID"
+                     select="com.zxq.legao.dao.StudentDao.selectStudentByID"
+                     javaType="com.zxq.legao.entity.vo.StudentVO"></association>
+    </resultMap>
+    <!--根据当前排课ID查询学生总数-->
+    <select id="selectStuTotalByScheID" parameterType="java.lang.Integer" resultType="java.lang.Integer">
+        SELECT count(1)
+        FROM legao_relation
+        WHERE scheduleID = #{id}
+    </select>
+    <!--查询当前排课学生-->
+    <select id="selectStudentNumByschID" parameterType="java.lang.Integer" resultType="com.zxq.legao.entity.po.RelationPO">
+        SELECT studentID,signInStatus
+        FROM legao_relation
+        WHERE scheduleID = #{id}
+    </select>
+
+    <select id="selectRelationByID" parameterType="java.lang.Integer" resultType="com.zxq.legao.entity.po.RelationPO">
+        SELECT
+            legao_relation.id,
+            legao_relation.scheduleID,
+            legao_relation.studentID,
+            legao_relation.signInStatus
+        FROM
+            legao_relation
+        WHERE id = #{id}
+    </select>
+</mapper>

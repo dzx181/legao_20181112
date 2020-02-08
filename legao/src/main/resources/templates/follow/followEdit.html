@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>followAdd</title>
+    <link href="../css/bootstrap.css" type="text/css" rel="stylesheet"/>
+    <link href="../css/main.css" type="text/css" rel="stylesheet"/>
+    <style>
+        #myInput {
+            background-image: url('https://static.runoob.com/images/mix/searchicon.png'); /* 搜索按钮 */
+            background-position: 10px 12px; /* 定位搜索按钮 */
+            background-repeat: no-repeat; /* 不重复图片 */
+            width: 100%;
+            font-size: 16px;
+            padding: 12px 20px 12px 40px;
+            border: 1px solid #ddd;
+            margin-bottom: 12px;
+        }
+    </style>
+
+</head>
+<body>
+<div id="content_box">
+    <span class="glyphicon glyphicon-circle-arrow-right"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    当前位置：跟进管理&nbsp;&gt;&nbsp;修改跟进
+    <hr/>
+
+    <div id="error" style="color:#FF0000;font-size:14px ;height: 20px;"></div>
+    <form id="followAddform">
+        跟进的学员：
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+            添加学员<span id="select_info" style="color: red;"></span>
+        </button>
+        <!-- Modal -->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" >
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">学员列表</h4>
+                    </div>
+                    <div class="modal-body" style="width:598px;height:450px;overflow-y:scroll;" >
+                        <input type="text" id="myInput" onkeyup="myFunction()" placeholder="搜索...">
+                        <table cellspacing="0" cellpadding="" class="table table-hover table-striped table-bordered" style="text-align: center;"
+                               id="myTable">
+                            <tr id="tr_th">
+                                <th><input type="checkbox" name="caption" value="0" id="checkAll"/></th>
+                                <th>学员</th>
+                                <th>性别</th>
+                                <th>电话</th>
+                            </tr>
+                            <tr th:each="students:${application.allStudentName}">
+                                <td><input type="checkbox" name="caption"
+                                           th:id="'box_'+${students.id}" th:value="${students.name}"/></td>
+                                <td>[[${students.name}]]</td>
+                                <td>[[${students.sex}]]</td>
+                                <td>[[${students.telphone}]]</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                        <button type="button" class="btn btn-primary" id="selectStudentBtns">选择</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--隐藏域-->
+        <input type="hidden" name="studentName" id="contract_studentName" />
+        &nbsp;&nbsp;&nbsp;&nbsp;
+
+         顾问: <select class="inputCss" id="follow_advisor" name="advisor">
+        <option value="0">--请选择顾问--</option>
+        <option th:value="${follow.name}" th:each="follow:${application.allemploy}"
+        th:selected="(${followEdit.advisor} == ${follow.name})?true:false">
+            [[${follow.name}]]
+        </option>
+    </select>&nbsp;&nbsp;&nbsp;&nbsp;
+        跟进模式：<input type="text" name="mode" id="follow_mode" style="height: 35px;width:200px ;" class="inputCss"
+                    placeholder="请输入6-12位的数字和字母" th:value="${followEdit.mode}"/>&nbsp;;&nbsp;&nbsp;&nbsp;
+        跟进内容：
+        <textarea rows="5" cols="23" id="follow_content" name="content" maxlength="200"
+                  placeholder="请输入学员的更进内容,输入长度不大于200的字符..." class="inputCss" th:text="${followEdit.content}"></textarea>
+        <input type="hidden" name="id" th:value="${followEdit.id}"/>
+        </br>
+        </br>
+        <input type="button" value="修改" class="btn btn-success" id="btn"/>&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="reset" class="btn btn-danger" value="取消"/>
+
+    </form>
+</div>
+<!-- 判断数据是否符合要求，提交表单的标志 -->
+<input type="hidden" id="submitInfo" value="false"/>
+
+</body>
+<script src="js/jquery-1.12.4.js" type="application/javascript" charset="UTF-8"></script>
+<script src="js/common.js" type="application/javascript" charset="UTF-8"></script>
+<script src="js/bootstrap.js" type="application/javascript" charset="UTF-8"></script>
+<script type="text/javascript">
+    /* 全选和反选*/
+    $("#checkAll").click(function () {
+
+        $("input[id^='box_']").prop("checked", this.checked);
+    });
+    $("#selectStudentBtns").click(function () {
+        var chk_value =[];//定义一个数组
+        var studentListval = "";
+
+        $('input[id^="box_"]:checked').each(function(){//遍历每一个名字为box_开头的复选框，其中选中的执行函数
+            chk_value.push($(this).val());//将选中的值添加到数组chk_value中
+            studentListval += (","+$(this).val());
+        });
+        $("#select_info").text("(已选"+chk_value.length+"个学员)");
+        $("#contract_studentName").val(chk_value);
+    });
+    //搜索学员
+    function myFunction() {
+        // 声明变量
+        var input, filter, table, tr, td, i;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("myTable");
+        tr = table.getElementsByTagName("tr");
+
+        // 循环表格每一行，查找匹配项
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[1];
+            if (td) {
+                if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+
+    /*判断状态，跟进名是否为空*/
+    $("#btn").click(function () {
+        var follow_studentName = $("#contract_studentName").val();
+        var follow_advisor = $("#follow_advisor").val();
+        var follow_mode = $("#follow_mode").val();
+        var follow_content = $("#follow_content").val();
+        var re = /[`~!@#$%^&*_+<>{}\\/'[\]]/im;
+
+        if (follow_studentName.trim().length == 0) {
+            $("#error").text("*请选择跟进的学员");
+        } else if (follow_advisor.trim().length == 0) {
+            $("#error").text("*请选择学员顾问");
+        } else if (re.test(follow_advisor.trim())) {
+            $("#error").text("*顾问存在`~!@#$%^&*_+<>{}\'[]/等的非法字符");
+        } else if (follow_mode.trim().length == 0) {
+            $("#error").text("*请输入跟进模式");
+        } else if (follow_content.trim().length == 0) {
+            $("#error").text("*请输入跟进内容");
+        } else {
+            $("#followAddform").attr("action", "saveFollow");
+            $("#followAddform").submit();
+        }
+
+    });
+
+
+</script>
+</html>

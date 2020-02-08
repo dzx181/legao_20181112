@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>scheduleEdit</title>
+    <link href="../css/bootstrap.css" type="text/css" rel="stylesheet"/>
+    <link href="../css/main.css" type="text/css" rel="stylesheet"/>
+
+</head>
+<style>
+    #myInput {
+        background-image: url('https://static.runoob.com/images/mix/searchicon.png'); /* 搜索按钮 */
+        background-position: 10px 12px; /* 定位搜索按钮 */
+        background-repeat: no-repeat; /* 不重复图片 */
+        width: 100%;
+        font-size: 16px;
+        padding: 12px 20px 12px 40px;
+        border: 1px solid #ddd;
+        margin-bottom: 12px;
+    }
+</style>
+<body>
+<div id="content_box">
+    <span class="glyphicon glyphicon-circle-arrow-right"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    当前位置：排课管理&nbsp;&gt;&nbsp;修改排课
+    <hr/>
+
+    <div id="error" style="color:#FF0000;font-size:14px ;height: 20px;"></div>
+    <form action="insertSchedule" id="scheduleEditform">
+        <table id="student_tab" style="width: 100%">
+            <tr>
+                <td>校区：</td>
+                <td>
+                    <select class="inputCss" id="schoolArea_id" name="schoolAreaID">
+                        <option value="">--请选择校区--</option>
+                        <option th:value="${schoolArea.id}" th:each="schoolArea:${application.allSchoolArea}" th:selected="(${schoolArea.id }== ${scheduleEdit.schoolArea.id})?true:false">
+                            [[${schoolArea.name}]]
+                        </option>
+
+                    </select>
+                </td>
+
+
+                <td>课程系列：</td>
+                <td>
+                    <select class="inputCss" id="seriesID" name="seriesID">
+                        <option value="">--请选择课程系列--</option>
+                        <option th:value="${series.id}" th:each="series:${application.allSeriesName}" th:selected="(${series.id}==${scheduleEdit.series.id})?true:false">
+                            [[${series.name}]]
+                        </option>
+                    </select>
+
+                </td>
+                <td>课程：</td>
+                <td>
+                    <select class="inputCss" id="courseID" name="courseID">
+                        <option value="">--请选择课程--</option>
+                        <option th:value="${courseName.id}" th:each="courseName:${application.allCourseName}" th:selected="(${courseName.id }== ${scheduleEdit.course.id})?true:false">
+                            [[${courseName.name}]]
+                        </option>
+                    </select>
+                </td>
+
+
+            </tr>
+
+            <tr style="height: 10px;">
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>时间：</td>
+                <td><input type="text" name="courseDate" class="inputCss" style="width:205px;" placeholder="请输入课程时间"
+                           id="student_courseDate" th:value="${#dates.format(scheduleEdit.courseDate,'yyyy-MM-dd')}"/>&nbsp;&nbsp;&nbsp;&nbsp;
+                    时间段：   <select class="inputCss" id="dateID" name="dateID">
+                        <option value="">--请选择时间段--</option>
+                        <option th:value="${dates.id}" th:each="dates:${application.allDate}" th:selected="(${dates.id }== ${scheduleEdit.date.id})?true:false">
+                            [[${dates.timeSection}]]
+                        </option>
+                    </select>
+                </td>
+                <td>教室：</td>
+                <td>
+                    <select class="inputCss" id="classroomID" name="classroomID">
+                        <option value="">--请选择教室--</option>
+                        <option th:value="${classroom.id}" th:each="classroom:${application.allClassRoomName}" th:selected="(${classroom.id }== ${scheduleEdit.classroom.id})?true:false">
+                            [[${classroom.name}]]
+                        </option>
+                    </select>
+                <td>学员的老师：</td>
+                <td>
+                    <select class="inputCss" id="teacherName" name="teacherID">
+                        <option value="">--请选择老师--</option>
+                        <option th:value="${teacherName.id}" th:each="teacherName:${application.allTeacherName}" th:selected="(${teacherName.name}== ${scheduleEdit.teacherVO.name})?true:false">
+                            [[${teacherName.name}]]
+                        </option>
+                    </select>
+                </td>
+
+            </tr>
+
+            <tr style="height: 10px;">
+
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>学员：</td>
+                <td >
+                    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+                        添加学员<span id="select_info" style="color: red;"></span>
+                    </button>
+                    <!-- Modal -->
+                    <div class="modal fade " id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" >
+                        <div class="modal-dialog " role="document" >
+                            <div class="modal-content" >
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                                    <h4 class="modal-title" id="myModalLabel">学员列表</h4>
+                                </div>
+                                <div class="modal-body" style="width:598px;height:450px;overflow-y:scroll;" >
+                                    <input type="text" id="myInput" onkeyup="myFunction()" placeholder="搜索...">
+                                    <table cellspacing="0" cellpadding="" class="table table-hover table-striped table-bordered" style="text-align: center;"
+                                           id="myTable">
+                                        <tr id="tr_th">
+                                            <th><input type="checkbox" name="caption" value="0" id="checkAll"/></th>
+                                            <th>姓名</th>
+                                            <th>性别</th>
+                                            <th>电话</th>
+                                        </tr>
+                                        <tr th:each="students:${application.allStudentName}">
+                                            <td><input type="checkbox" name="caption"
+                                                       th:id="'box_'+${students.id}" th:value="${students.id}"/></td>
+                                            <td>[[${students.name}]]</td>
+                                            <td>[[${students.sex}]]</td>
+                                            <td>[[${students.telphone}]]</td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                                    <button type="button" class="btn btn-primary" id="selectStudentBtns">选择</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td colspan="5" align="center">
+                    <br/>
+                    <input type="button" value="保存" class="btn btn-success" id="addbtn"/>&nbsp;&nbsp;&nbsp;&nbsp;
+
+                    <input type="reset" name="cancel" class="btn btn-danger" value="取消排课"/></td>
+            </tr>
+            <input type="hidden" name="studentList" id="studentList" />
+        </table>
+        <!--scheduleID-->
+        <input type="hidden" th:value="${scheduleEdit.id}" name="id"/>
+
+    </form>
+
+</div>
+
+
+</body>
+<script src="js/jquery-1.12.4.js" type="application/javascript" charset="UTF-8"></script>
+<script src="js/common.js" type="application/javascript" charset="UTF-8"></script>
+<script src="laydate/laydate.js" type="text/javascript"></script>
+<script src="http://www.jq22.com/jquery/jquery-1.10.2.js"></script>
+<script src="js/bootstrap.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+    //搜索学员
+    function myFunction() {
+        // 声明变量
+        var input, filter, table, tr, td, i;
+        input = document.getElementById("myInput");
+        filter = input.value.toUpperCase();
+        table = document.getElementById("myTable");
+        tr = table.getElementsByTagName("tr");
+
+        // 循环表格每一行，查找匹配项
+        for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[1];
+            if (td) {
+                if (td.innerHTML.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+
+    $("#selectStudentBtns").click(function () {
+        var chk_value =[];//定义一个数组
+        var studentListval = "";
+        var reg=/^,/gi;
+
+        $('input[id^="box_"]:checked').each(function(){//遍历每一个名字为box_开头的复选框，其中选中的执行函数
+            chk_value.push($(this).val());//将选中的值添加到数组chk_value中
+            studentListval += (","+$(this).val());
+        });
+        $("#select_info").text("(已选"+chk_value.length+"个学员)");
+        $("#studentList").val(studentListval.replace(reg,""))
+    });
+    /* 全选和反选*/
+    $("#checkAll").click(function () {
+
+        $("input[id^='box_']").prop("checked", this.checked);
+    });
+
+    //日期插件
+    laydate.render({
+        elem: '#student_courseDate',
+        theme: '#8D48F9'//指定元素
+        , trigger: 'click'
+    });
+
+
+    /*判断状态，排课名是否为空*/
+    $("#addbtn").click(function () {
+        var schoolArea_id = $("#schoolArea_id").val();
+        var seriesID = $("#seriesID").val();
+        var courseID = $("#courseID").val();
+        var dateID = $("#dateID").val();
+        var courseDate = $("#student_courseDate").val();
+        var classroomID = $("#classroomID").val();
+        var teacherName = $("#teacherName").val();
+        var studentList = $("#studentList").val();
+
+        if (schoolArea_id.trim().length == 0) {
+            $("#error").text("*请选择校区");
+        }  else if (seriesID.trim().length == 0) {
+            $("#error").text("*请选择课程系列");
+        } else if (courseID.trim().length == 0) {
+            $("#error").text("*请选择课程");
+        }  else if (courseDate.trim().length == 0) {
+            $("#error").text("*请选择课程时间");
+        } else if (classroomID.trim().length == 0) {
+            $("#error").text("*请选择教室");
+        }else if (dateID.trim().length == 0) {
+            $("#error").text("*请选择时间段");
+        } else if (teacherName.trim().length == 0) {
+            $("#error").text("*请选择上课老师");
+        }else if (studentList.length == 0) {
+            $("#error").text("*请选择上课学员");
+        } else {
+            $("#scheduleEditform").attr("action", "saveSchedule");
+            $("#scheduleEditform").submit();
+        }
+
+    });
+
+
+</script>
+</html>

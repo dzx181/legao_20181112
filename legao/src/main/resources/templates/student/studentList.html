@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>studentList</title>
+    <link href="css/bootstrap.css" type="text/css" rel="stylesheet"/>
+    <link href="css/main.css" type="text/css" rel="stylesheet"/>
+    <link href="css/paging.css" type="text/css" rel="stylesheet"/>
+    <style>
+
+
+    </style>
+</head>
+<body>
+<div  id="content_box" style="display: flex;flex-direction: column">
+    <div style="width: 80%">
+    <span class="glyphicon glyphicon-circle-arrow-right"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    当前位置：学员管理&nbsp;&gt;&nbsp;学员查询
+
+    <a style="cursor: pointer;text-decoration: none;color: #000000;float: right;" href="#"><span
+            class="glyphicon glyphicon-print"></span>&nbsp;打印</a>
+
+    <a style="cursor: pointer;text-decoration: none;color: #000000;float: right;margin-right: 50px;" href="/studentExportExcel"><span
+            class="glyphicon glyphicon-export"></span>&nbsp;导出</a>
+    </div>
+    <hr/>
+    <form action="" id="studentform">
+
+        学员姓名：<input name="name" id="name" style="height: 35px;" class="inputCss"
+                    th:value="${blurStudent}==null? '':${blurStudent.name}"/>&nbsp;&nbsp;
+        联系电话：<input name="telphone" id="telphone" style="height: 35px;" class="inputCss"
+                    th:value="${blurStudent}==null? '':${blurStudent.telphone}"/>&nbsp;&nbsp;
+        来源：<input name="source" id="source" style="height: 35px;" class="inputCss"
+                  th:value="${blurStudent}==null? '':${blurStudent.source}"/>&nbsp;&nbsp;
+        校区：<select name="schoolAreaID" id="schoolAreaID" style="height: 35px;" class="inputCss">
+        <option value="">--请选择校区--</option>
+        <option th:value="${schoolArea.id}" th:each="schoolArea:${application.allSchoolArea}" th:selected="(${blurStudent.schoolAreaID} ==${schoolArea.id})?true:false">
+            [[${schoolArea.name}]]
+        </option>
+    </select>
+       &nbsp;&nbsp;
+
+        </br></br>
+        重要程度：<select name="importanceGrade" id="importanceGrade" style="height: 35px;" class="inputCss"
+                     th:value="${blurStudent}==null? '':${blurStudent.importanceGrade} ">
+        <option value="" th:selected="${blurStudent}==null? true:false">----全部----</option>
+        <option value="1" th:selected="${blurStudent}==null? false:(${blurStudent.importanceGrade}==1?true:false)">重点
+        </option>
+        <option value="2" th:selected="${blurStudent}==null? false:(${blurStudent.importanceGrade}==2?true:false)">优质
+        </option>
+        <option value="3" th:selected="${blurStudent}==null? false:(${blurStudent.importanceGrade}==3?true:false)">会员
+        </option>
+        <option value="4" th:selected="${blurStudent}==null? false:(${blurStudent.importanceGrade}==4?true:false)">一般
+        </option>
+        <option value="5" th:selected="${blurStudent}==null? false:(${blurStudent.importanceGrade}==5?true:false)">放弃
+        </option>
+        <option value="6" th:selected="${blurStudent}==null? false:(${blurStudent.importanceGrade}==6?true:false)">未知
+        </option>
+    </select>&nbsp;&nbsp;&nbsp;&nbsp;
+        性别：<select name="sex" id="sex" style="height: 35px;" class="inputCss"
+                   th:value="${blurStudent}==null? '':${blurStudent.sex} ">
+        <option value="" th:selected="${blurStudent}==null? true:false">----全部----</option>
+        <option value="男" th:selected="${blurStudent}==null? false:(${blurStudent.sex}=='男'?true:false)">男</option>
+        <option value="女" th:selected="${blurStudent}==null? false:(${blurStudent.sex}=='女'?true:false)">女</option>
+    </select>&nbsp;&nbsp;&nbsp;&nbsp;
+        学员状态：<select name="status" id="status" style="height: 35px;" class="inputCss">
+        <option value="" th:selected="${blurStudent}==null? true:false">----全部----</option>
+        <option value="1" th:selected="${blurStudent}==null? false:(${blurStudent.status}==1?true:false)">新客户</option>
+        <option value="2" th:selected="${blurStudent}==null? false:(${blurStudent.status}==2?true:false)">试听客户</option>
+        <option value="3" th:selected="${blurStudent}==null? false:(${blurStudent.status}==3?true:false)">号码无效客户
+        </option>
+        <option value="4" th:selected="${blurStudent}==null? false:(${blurStudent.status}==4?true:false)">其他</option>
+    </select>&nbsp;&nbsp;&nbsp;&nbsp;
+
+        跟进人：
+
+            <select class="inputCss" id="follow_id" name="followID">
+                <option value="0">--请选择跟进人--</option>
+                <option th:value="${follow.id}" th:each="follow:${application.allemploy}" th:selected="(${blurStudent.followID} ==${follow.id})?true:false">
+                    [[${follow.name}]]
+                </option>
+            </select>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+
+        <input type="button" value="搜索" class="btn btn-success" id="selectStudent"/>&nbsp;
+        <input type="button" class="btn btn-danger" value="删除" id="dropStudent" th:if="${session.user.status}==1"/>
+
+        <br/><br/>
+        <table cellspacing="0" cellpadding="" class="table table-hover table-striped table-bordered" style="text-align: center;"
+               id="student_tab">
+            <tr id="tr_th">
+                <th><input type="checkbox" name="caption" value="0" id="checkAll"/></th>
+                <!--遍历标题-->
+                <th th:each="field:${FieldZH}">
+                    <span th:switch="${field}">
+                        <span th:case="重要程度">
+                           重要程度<span class="glyphicon glyphicon-sort-by-attributes"
+                                     style="cursor: pointer;" onclick="orderMethod('importanceGrade_asc')"></span>&nbsp;&nbsp;&nbsp;
+                            <span
+                                    class="glyphicon glyphicon-sort-by-attributes-alt"
+                                    style="cursor: pointer;" id="desc"
+                                    onclick="orderMethod('importanceGrade_desc')"></span>
+                        </span>
+                         <span th:case="*">[[${field}]]</span>
+                    </span>
+                </th>
+                <th th:if="${session.user.status}==1">操作</th>
+
+                <!--遍历具体值-->
+            <tr th:each="student:${studentVOList}">
+                <td><input type="checkbox" name="caption"
+                           th:id="'box_'+${student.id}" th:value="${student.id}"/></td>
+                <td th:if="${student.nickName}!=null  ">
+                    [[${student.nickName}]]
+                </td>
+                <td th:if="${student.name}!=null">
+                    [[${student.name}]]
+                </td>
+                <td th:if="${student.parentRelat}!=null">
+                    [[${student.parentRelat}]]
+                </td>
+                <td th:if="${student.parentName}!=null ">
+                    [[${student.parentName}]]
+                </td>
+                <td th:if="${student.telphone}!=null"> [[${student.telphone}]]</td>
+                <td th:if="${student.weChatID}!=null ">[[${student.weChatID}]]</td>
+                <td th:if="${student.education}!=null ">[[${student.education}]]</td>
+                <td th:if="${student.birthday}!=null">
+                    <span th:text="${#dates.format(student.birthday,'yyyy年MM月dd日')}"></span></td>
+                <td th:if="${student.sex}!=null ">[[${student.sex}]]</td>
+                <td th:if="${student.createDate}!=null">
+                    <span th:text="${#dates.format(student.createDate,'yyyy年MM月dd日')}"></span></td>
+                <td th:if="${student.sparePhone}!=null ">[[${student.sparePhone}]]</td>
+                <td th:if="${student.markPeople}!=null ">[[${student.markPeople}]]</td>
+                <td th:if="(${student.advisor}!=0)?((${student.advisor}!=null)?true:false):false">
+                    [[${student.advisor}]]</td>
+            <td th:if="(${student.advisor}==0)">
+                无</td>
+                <td th:if="${student.area}!=null ">[[${student.area}]]</td>
+                <td th:if="${student.willDate}!=null">
+                    <span th:text="${#dates.format(student.willDate,'yyyy年MM月dd日')}"></span>
+                </td>
+                <td th:if="${student.baseSituation}!=null ">[[${student.baseSituation}]]</td>
+                <td th:if="${student.status}!=null">
+                    <span th:if="${student.status}==1">新客户</span>
+                    <span th:if="${student.status}==2">试听客户</span>
+                    <span th:if="${student.status}==3">号码无效客户</span>
+                    <span th:if="${student.status}==4">其他</span>
+                </td>
+                <td th:if="${student.importanceGrade}!=null">
+                    <span th:if="${student.importanceGrade}==1">重点</span>
+                    <span th:if="${student.importanceGrade}==2">优质</span>
+                    <span th:if="${student.importanceGrade}==3">会员</span>
+                    <span th:if="${student.importanceGrade}==4">一般</span>
+                    <span th:if="${student.importanceGrade}==5">放弃</span>
+                    <span th:if="${student.importanceGrade}==6">未知</span>
+                </td>
+                <td th:if="${student.source}!=null ">[[${student.source}]]</td>
+                <td th:if="${student.teacherName}!=null ">[[${student.teacherName}]]</td>
+                <td th:if="${student.schoolAreaID}!=null">[[${student.schoolAreaID.name}]]</td>
+            <td th:if="(${student.follow}!= null)">
+
+                <span th:if="${student.followID}!=null">[[${student.followID.name}]]</span>
+                <span th:if="${student.followID}==null" style="color: red">跟进信息已被删除或未添加</span>
+            </td>
+
+            <td th:if="${student.stuAge}!=null ">
+                [[${student.stuAge}]]
+            </td>
+                <td th:if="${session.user.status}==1"><a th:href="'editStudent?studentId='+${student.id}"><span class="glyphicon glyphicon-pencil"></span></a>
+                </td>
+            </tr>
+        </table>
+        <input type="hidden" name="ifImportanceGradeOrder" id="ifImportanceGradeOrder">
+    </form>
+    <!--分页元素-->
+    <div class="box" id="box" style="align-self: center"></div>
+    <!--添加表单提交标志-->
+    <form id="pageForm" style="display: none">
+        <input name="name" th:value="${blurStudent}==null? '':${blurStudent.name}"/>&nbsp;&nbsp;
+        <input name="status" th:value="${blurStudent}==null? '':${blurStudent.status} "/>
+        <input name="telphone" th:value="${blurStudent}==null? '':${blurStudent.telphone}"/>&nbsp;&nbsp;
+        <input name="importanceGrade" th:value="${blurStudent}==null? '':${blurStudent.importanceGrade} "/>p;&nbsp;
+        <input name="schoolAreaID" th:value="${blurStudent}==null? '':${blurStudent.schoolAreaID} "/>
+        <input name="importanceGrade" th:value="${blurStudent}==null? '':${blurStudent.importanceGrade} "/>p;&nbsp;
+        <input name="sex" th:value="${blurStudent}==null? '':${blurStudent.sex} "/>
+        <input name="source" th:value="${blurStudent}==null? '':${blurStudent.source} "/>p;&nbsp;
+        <input name="followID" th:value="${blurStudent}==null? '':${blurStudent.followID} "/>
+        <input name="ifImportanceGradeOrder" th:value="${blurStudent}==null? '':${blurStudent.ifImportanceGradeOrder} ">
+        <input type="text" id="pages" name="page"/>
+
+        <input type="button" id="btn" value="tijiao"/>
+        <!--传入分页的参数-->
+        <input type="text" id="actionName" value="selectStudent"/>
+    </form>
+</div>
+    <script src="js/jquery-1.12.4.js" type="application/javascript" charset="UTF-8"></script>
+    <script src="js/bootstrap.js" type="application/javascript" charset="UTF-8"></script>
+    <script src="js/paging.js" type="application/javascript"></script>
+    <script src="js/common.js" type="application/javascript" charset="UTF-8"></script>
+    <script type="text/javascript" th:inline="javascript">
+        function orderMethod(str) {
+            var arry = str.split('_');
+            var field = arry[0];
+            var action = arry[1];
+            if (field == 'importanceGrade') {
+                if (action == 'asc') {
+                    $("#ifImportanceGradeOrder").val("desc")
+                    $("#studentform").attr("action", "selectStudent");
+                    $("#studentform").submit();
+                } else {
+                    $("#ifImportanceGradeOrder").val("asc")
+                    $("#studentform").attr("action", "selectStudent");
+                    $("#studentform").submit();
+                }
+            }
+
+
+        }
+
+
+        /*提交查询*/
+        $("#selectStudent").click(function () {
+            $("#studentform").attr("action", "selectStudent");
+            $("#studentform").submit();
+        });
+        /*提交删除*/
+        $("#dropStudent").click(function () {
+            var chex = $("input[id^='box_']:checked");
+            if (chex.length == 0) {
+                alert("请选择你要删除的学员");
+            } else {
+                if (confirm("确定要删除该学员吗？")) {
+                    $("#studentform").attr("action", "deleteStudents");
+                    $("#studentform").submit();
+                }
+            }
+
+        });
+
+        /* 全选和反选*/
+        $("#checkAll").click(function () {
+
+            $("input[id^='box_']").prop("checked", this.checked);
+        });
+
+        //分页逻辑
+        var setTotalCount = [[${pageInfo.total}]];
+        var spageNum = [[${pageInfo.pages}]];
+        var initPageNos = [[${pageInfo.pageNum}]]
+        $('#box').paging({
+            initPageNo: initPageNos, // 初始页码
+            totalPages: spageNum, //总页数
+            totalCount: '合计 ' + setTotalCount + ' 条数据', // 条目总数
+            slideSpeed: 600, // 缓动速度。单位毫秒
+            jump: true, //是否支持跳转
+            callback: function (page) { // 回调函数
+                //给标志赋值
+                $("#pages").val(page);
+            }
+        })
+
+
+    </script>
+
+</body>
+</html>

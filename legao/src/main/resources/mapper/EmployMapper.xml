@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxq.legao.dao.EmployDao">
+    <select id="selectEmploy"
+            resultType="com.zxq.legao.entity.vo.EmployVO" statementType="STATEMENT" resultMap="select_employMap">
+
+        SELECT
+        id,
+        <foreach collection="fields" separator="," item="fields">${fields}</foreach>
+
+        FROM
+        legao_employ
+
+        <where>
+            <if test="employPO.name!=null and employPO.name!=''">
+                and name like '%${employPO.name}%'
+            </if>
+            <if test="employPO.telphone!=null and employPO.telphone!=''">
+                and telphone like '%${employPO.telphone}%'
+            </if>
+            <if test="employPO.sex!=null and employPO.sex!=''">
+                and sex = '${employPO.sex}'
+            </if>
+            <if test="employPO.status!=null and employPO.status!=''">
+                and status=${employPO.status}
+            </if>
+            <if test="employPO.jobID!=null">
+                and jobID=${employPO.jobID}
+            </if>
+
+        </where>
+    </select>
+
+    <resultMap id="select_employMap" type="com.zxq.legao.entity.vo.EmployVO">
+        <id column="id" property="id"></id>
+        <result column="name" property="name"></result>
+        <result column="sex" property="sex"></result>
+        <result column="telphone" property="telphone"></result>
+        <result column="birthday" property="birthday"></result>
+        <result column="entryDate" property="entryDate"></result>
+        <result column="basicSalary" property="basicSalary"></result>
+        <result column="fullWork" property="fullWork"></result>
+        <result column="EatAllow" property="eatAllow"></result>
+        <result column="classPay" property="classPay"></result>
+        <result column="allClassTime" property="allClassTime"></result>
+        <result column="extraPay" property="extraPay"></result>
+        <result column="area" property="area"></result>
+        <result column="status" property="status"></result>
+        <result column="jobID" property="jobID"></result>
+        <association property="jobVO" column="jobID" select="com.zxq.legao.dao.JobDao.selectJobByID"
+                     javaType="com.zxq.legao.entity.vo.JobVO"></association>
+    </resultMap>
+    <select id="selectAllEmploy" resultType="com.zxq.legao.entity.po.EmployPO">
+        SELECT
+            legao_employ.id,
+            legao_employ.`name`
+        FROM
+            legao_employ
+
+    </select>
+    <select id="selectAllTeacherName" resultType="com.zxq.legao.entity.vo.EmployVO">
+        SELECT
+            legao_employ.id,
+            legao_employ.`name`
+        FROM
+            legao_employ
+        WHERE legao_employ.jobID = 1
+    </select>
+    <select id="selectEmployById" resultMap="select_employMap" resultType="com.zxq.legao.entity.vo.EmployVO">
+        SELECT
+            legao_employ.id,
+            legao_employ.`name`,
+            legao_employ.sex,
+            legao_employ.telphone,
+            legao_employ.birthday,
+            legao_employ.entryDate,
+            legao_employ.jobID,
+            legao_employ.basicSalary,
+            legao_employ.fullWork,
+            legao_employ.eatAllow,
+            legao_employ.classPay,
+            legao_employ.allClassTime,
+            legao_employ.extraPay,
+            legao_employ.area,
+            legao_employ.`status`
+        FROM
+            legao_employ
+        where id = #{id}
+
+    </select>
+    <update id="updateAllClassTime" parameterType="com.zxq.legao.entity.vo.EmployVO" >
+        update legao_employ set allClassTime = #{allClassTime} where id = #{id}
+    </update>
+    <select id="selectAllEmploys"  resultMap="select_employMap" resultType="com.zxq.legao.entity.vo.EmployVO">
+        select * from legao_employ
+    </select>
+</mapper>

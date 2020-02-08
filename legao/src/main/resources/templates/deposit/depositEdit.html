@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>depositAdd</title>
+    <link href="../css/bootstrap.css" type="text/css" rel="stylesheet"/>
+    <link href="../css/main.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<div id="content_box">
+    <span class="glyphicon glyphicon-circle-arrow-right"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    当前位置：订金管理&nbsp;&gt;&nbsp;修改订金
+    <hr/>
+
+    <div id="error" style="color:#FF0000;font-size:14px ;height: 20px;"></div>
+    <form id="depositAddform">
+        学生：
+        <input name="studentName" id="deposit_name" class="inputCss" style="width:200px ;" placeholder="请输入长度不超过20的字符"
+               maxlength="20" th:value="${depositEdit.studentName}"/>&nbsp;&nbsp;&nbsp;&nbsp;
+
+        顾问:<input name="adviser" id="deposit_adviser" class="inputCss" style="width:200px ;" placeholder="请输入长度不超过20的字符"
+                   maxlength="20" th:value="${depositEdit.adviser}"/>&nbsp;&nbsp;&nbsp;&nbsp;
+        金额：<input type="text" name="moneyAmount" id="deposit_moneyAmount" style="height: 35px;width:200px ;" class="inputCss"
+                    placeholder="请输入6-12位的数字和字母" th:value="${depositEdit.moneyAmount}"/>&nbsp;&nbsp;&nbsp;&nbsp;
+        支付方式：
+        <input type="text" name="payType" id="deposit_payType" style="height: 35px;width:200px ;" class="inputCss"
+               placeholder="请输入支付方式" th:value="${depositEdit.payType}"/>&nbsp;&nbsp;&nbsp;&nbsp;
+        备注：<input type="text" name="remark" id="deposit_remark" style="height: 35px;width:200px ;" class="inputCss"
+               placeholder="请输入备注" th:value="${depositEdit.remark}"/>&nbsp;&nbsp;&nbsp;&nbsp;
+        </br>
+        </br>
+        <input type="hidden" name="id" th:value="${depositEdit.id}"/>
+        <input type="button" value="修改" class="btn btn-success" id="btn"/>&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="reset" class="btn btn-danger" value="取消"/>
+
+    </form>
+</div>
+<!-- 判断数据是否符合要求，提交表单的标志 -->
+<input type="hidden" id="submitInfo" value="false"/>
+
+</body>
+<script src="js/jquery-1.12.4.js" type="application/javascript" charset="UTF-8"></script>
+<script src="js/common.js" type="application/javascript" charset="UTF-8"></script>
+<script type="text/javascript">
+    /*判断状态，订金名是否为空*/
+    $("#btn").click(function () {
+        var deposit_name = $("#deposit_name").val();
+        var deposit_adviser = $("#deposit_adviser").val();
+        var deposit_moneyAmount = $("#deposit_moneyAmount").val();
+        var deposit_payType = $("#deposit_payType").val();
+        var deposit_remark = $("#deposit_remark").val();
+        var isNum = /^[0-9]+.?[0-9]*$/; //判断字符串是否为数字 //判断正整数 /^[1-9]+[0-9]*]*$/
+        var re = /[`~!@#$%^&*_+<>{}\\/'[\]]/im;
+
+        if (deposit_name.trim().length == 0) {
+            $("#error").text("*请输入学员的名称");
+        } else if (re.test(deposit_name.trim())) {
+            $("#error").text("*学员的名称存在`~!@#$%^&*_+<>{}\'[]/等的非法字符");
+        }else if (deposit_adviser.trim().length == 0) {
+            $("#error").text("*该请输入顾问");
+        } else if (deposit_moneyAmount.trim().length == 0) {
+            $("#error").text("*请输入金额");
+        } else if (!isNum.test(deposit_moneyAmount)) {
+            $("#error").text("*金额只允许数字");
+        }  else if (deposit_payType.trim().length == 0) {
+            $("#error").text("*请输入订金支付方式");
+        }else if (deposit_remark.trim().length == 0) {
+            $("#error").text("*请输入订金备注");
+        }else {
+            $("#depositAddform").attr("action", "saveDeposit");
+            $("#depositAddform").submit();
+        }
+
+    });
+
+
+</script>
+</html>

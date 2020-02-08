@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>dateList</title>
+    <link href="css/bootstrap.css" type="text/css" rel="stylesheet"/>
+    <link href="css/main.css" type="text/css" rel="stylesheet"/>
+    <link href="css/paging.css" type="text/css" rel="stylesheet"/>
+    <style>
+
+
+    </style>
+</head>
+<body>
+<div  id="content_box" style="display:flex;flex-direction:column;">
+    <div style="width: 80%">
+    <span class="glyphicon glyphicon-circle-arrow-right"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    当前位置：系统设置&nbsp;&gt;&nbsp;时间设置
+
+    <a style="cursor: pointer;text-decoration: none;color: #000000;float: right;" href="#"><span
+            class="glyphicon glyphicon-print"></span>&nbsp;打印</a>
+
+    <a style="cursor: pointer;text-decoration: none;color: #000000;float: right;margin-right: 50px;" href="/dateExportExcel"><span
+            class="glyphicon glyphicon-export"></span>&nbsp;导出</a>
+</div>
+    <hr/>
+    <form action="" id="dateform">
+
+        时间段：<select name="timeSection" id="timeSection" style="height: 35px;" class="inputCss"
+                   th:value="${blurDate}==null? '':${blurDate.timeSection}">
+        <option value="" th:selected="${blurDate}==null? true:false">----全部----</option>
+        <option th:value="${dates.timeSection}" th:selected="${blurDate}==null? false:(${blurDate.timeSection}==${dates.timeSection}?true:false)" th:each="dates:${application.allDate}">[[${dates.timeSection}]]</option>
+
+    </select>&nbsp;&nbsp;
+
+        备注：<input name="remark" id="remark" style="height: 35px;" class="inputCss"
+                   th:value="${blurDate}==null? '':${blurDate.remark}"/>&nbsp;&nbsp;
+        <input type="button" value="搜索" class="btn btn-success" id="selectDate"/>&nbsp;
+        <input type="button" class="btn btn-danger" value="删除" id="dropDate" th:if="${session.user.status}==1"/>&nbsp;
+        <a th:href="dateAdd"> <input type="button" class="btn btn-info" value="添加" id="dateAdd" th:if="${session.user.status}==1"/></a>
+        <br/><br/>
+        <table cellspacing="0" cellpadding="" class="table table-hover table-striped table-bordered" style="text-align: center;"
+               id="date_tab">
+            <tr id="tr_th">
+                <th><input type="checkbox" name="caption" value="0" id="checkAll"/></th>
+                <th>时间段</th>
+                <th>状态</th>
+                <th>优先级</th>
+                <th>备注</th>
+                <th th:if="${session.user.status}==1">操作</th>
+            </tr>
+            <tr th:each="date:${dateVOList}">
+                <td><input type="checkbox" name="caption"
+                           th:id="'box_'+${date.id}" th:value="${date.id}"/></td>
+                <td>[[${date.timeSection}]]</td>
+                <td th:if="${date.status}==1">
+                    <span class="label label-success">启用中</span></td>
+                <td th:if="${date.status}==2">
+                    <span class="label label-default">停用</span> </td>
+                <td>[[${date.priority}]]</td>
+                <td>[[${date.remark}]]</td>
+                <td th:if="${session.user.status}==1"><a th:href="'editDate?dateId='+${date.id}"><span
+                        class="glyphicon glyphicon-pencil"></span></a>&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a th:href="dateAdd"><span class="glyphicon glyphicon-plus"></span></a>
+                </td>
+            </tr>
+        </table>
+
+    </form>
+    <!--分页元素-->
+    <div class="box" id="box" style="align-self:center;"></div>
+    <!--添加表单提交标志-->
+    <form id="pageForm" style="display: none">
+        <input name="timeSection" th:value="${blurDate}==null? '':${blurDate.timeSection}"/>&nbsp;&nbsp;
+        <input name="remark" th:value="${blurDate}==null? '':${blurDate.remark}"/>&nbsp;&nbsp;
+        <input type="text" id="pages" name="page"/>
+
+        <input type="button" id="btn" value="tijiao"/>
+        <!--传入分页的参数-->
+        <input type="text" id="actionName" value="selectDate"/>
+    </form>
+</div>
+    <script src="js/jquery-1.12.4.js" type="application/javascript" charset="UTF-8"></script>
+    <script src="js/bootstrap.js" type="application/javascript" charset="UTF-8"></script>
+    <script src="js/paging.js" type="application/javascript"></script>
+    <script src="js/common.js" type="application/javascript" charset="UTF-8"></script>
+    <script type="text/javascript" th:inline="javascript">
+
+        /*提交查询*/
+        $("#selectDate").click(function () {
+            $("#dateform").attr("action", "selectDate");
+            $("#dateform").submit();
+        });
+        /*提交删除*/
+        $("#dropDate").click(function () {
+            var chex = $("input[id^='box_']:checked");
+            if (chex.length == 0) {
+                alert("请选择你要删除的时间");
+            } else {
+                if (confirm("确定要删除该时间吗？")) {
+                    $("#dateform").attr("action", "deleteDates");
+                    $("#dateform").submit();
+                }
+            }
+
+        });
+
+        /* 全选和反选*/
+        $("#checkAll").click(function () {
+
+            $("input[id^='box_']").prop("checked", this.checked);
+        });
+
+        //分页逻辑
+        var setTotalCount = [[${pageInfo.total}]];
+        var spageNum = [[${pageInfo.pages}]];
+        var initPageNos = [[${pageInfo.pageNum}]]
+        $('#box').paging({
+            initPageNo: initPageNos, // 初始页码
+            totalPages: spageNum, //总页数
+            totalCount: '合计 ' + setTotalCount + ' 条数据', // 条目总数
+            slideSpeed: 600, // 缓动速度。单位毫秒
+            jump: true, //是否支持跳转
+            callback: function (page) { // 回调函数
+                //给标志赋值
+                $("#pages").val(page);
+            }
+        })
+
+
+    </script>
+</body>
+</html>

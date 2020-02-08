@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>scheduleList</title>
+    <link href="css/bootstrap.css" type="text/css" rel="stylesheet"/>
+    <link href="css/main.css" type="text/css" rel="stylesheet"/>
+    <link href="css/paging.css" type="text/css" rel="stylesheet"/>
+    <style>
+
+
+    </style>
+</head>
+<body>
+<div id="content_box"  >
+    <span class="glyphicon glyphicon-circle-arrow-right"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    当前位置：排课管理&nbsp;&gt;&nbsp;排课查询
+
+    <a style="margin-left: 530px;cursor: pointer;text-decoration: none;color: #000000; " href="#" id="export"
+        data-toggle="modal" data-target="#myModal"><span
+            class="glyphicon glyphicon-print"></span>&nbsp;打印</a>
+    <!-- 导出内容Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="myModalLabel">导出选项</h4>
+                </div>
+                <div class="modal-body">
+                   选择时间： <input id="beginTime" class="inputCss" style="width:205px;"/>&nbsp;-&nbsp;<input id="endTime" class="inputCss" style="width:205px;"/>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                    <a href="#" id="ackBtn"><button type="button" class="btn btn-primary" >确定</button></a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a style="margin-left: 100px;cursor: pointer;text-decoration: none;color: #000000;" href="#"><span
+            class="glyphicon glyphicon-export"></span>&nbsp;导出</a>
+
+    <hr/>
+    <!--排课表-->
+    <form action="" id="scheduleform">
+        校区： <select class="inputCss" id="schoolArea_id" name="schoolAreaID">
+        <option value="">---请选择校区----</option>
+        <option th:value="${schoolArea.id}" th:each="schoolArea:${application.allSchoolArea}"
+                th:selected="(${blurSchedule}!=null)?((${blurSchedule.schoolAreaID} == ${schoolArea.id})?true:false):false">
+            [[${schoolArea.name}]]
+        </option>
+
+    </select>&nbsp;&nbsp;
+        周数：<select class="inputCss" name="weekOfYear">
+        <option value="">--请选择周数--</option>
+        <option th:value="${schedule.weekOfYear}" th:each="schedule:${application.allWeekOfYear}"
+                th:selected="(${blurSchedule}!=null)?((${blurSchedule.weekOfYear} == ${schedule.weekOfYear})?true:false):false">
+            第[[${schedule.weekOfYear}]]周
+        </option>
+    </select>&nbsp;&nbsp;
+        学员的老师：
+
+        <select class="inputCss" id="teacherName" name="teacherID">
+            <option value="">--请选择老师--</option>
+            <option th:value="${teacherName.id}" th:each="teacherName:${application.allTeacherName}"
+                    th:selected="(${blurSchedule}!=null)?((${blurSchedule.teacherID} == ${teacherName.id})?true:false):false">
+                [[${teacherName.name}]]
+            </option>
+        </select>&nbsp;&nbsp;
+        时间段：
+        <select class="inputCss" id="dateID" name="dateID">
+            <option value="">--请选择时间段--</option>
+            <option th:value="${dates.id}" th:each="dates:${application.allDate}"
+                    th:selected="(${blurSchedule}!=null)?((${blurSchedule.dateID} == ${dates.id})?true:false):false">
+                [[${dates.timeSection}]]
+            </option>
+        </select>&nbsp;&nbsp;
+
+        <input type="button" value="搜索" class="btn btn-success" id="selectSchedule"/>&nbsp;
+        <input type="button" class="btn btn-danger" value="删除" id="dropSchedule" th:if="${session.user.status}==1"/>
+
+
+        <div class="table-responsive">
+            <div style="text-align: center"><h3>
+                第[[${dateVO.weekOfYear}]]周（[[${dateVO.startWeekDate}]]—[[${dateVO.endWeekDate}]]） 排课表</h3></div>
+            <table class="table table-bordered" cellspacing="0" cellpadding="" style="text-align: center;">
+                <tr>
+                    <th>时间段</th>
+                    <th class="active">星期一</th>
+                    <th>星期二</th>
+                    <th class="warning">星期三</th>
+                    <th>星期四</th>
+                    <th class="info">星期五</th>
+                    <th>星期六</th>
+                    <th class="success">星期日</th>
+                </tr>
+                <tr th:each="timeSection:${application.allDate}">
+                    <td th:id="'timeSection_' + ${timeSection.id}" style="display:table-cell; vertical-align:middle">
+                        [[${timeSection.timeSection}]]
+                    </td>
+                    <td class="active" style="display:table-cell; vertical-align:middle">
+                        <div th:id="'time_' + ${timeSection.id} + '_2'"></div>
+                    </td>
+                    <td style="display:table-cell; vertical-align:middle">
+                        <div th:id="'time_' + ${timeSection.id} + '_3'"></div>
+                    </td>
+                    <td class="warning" style="display:table-cell; vertical-align:middle">
+                        <div th:id="'time_' + ${timeSection.id} + '_4'"></div>
+                    </td>
+                    <td style="display:table-cell; vertical-align:middle">
+                        <div th:id="'time_' + ${timeSection.id} + '_5'"></div>
+                    </td>
+                    <td class="info" style="display:table-cell; vertical-align:middle">
+                        <div th:id="'time_' + ${timeSection.id} + '_6'"></div>
+                    </td>
+                    <td style="display:table-cell; vertical-align:middle">
+                        <div th:id="'time_' + ${timeSection.id} + '_7'"></div>
+                    </td>
+                    <td class="success" style="display:table-cell; vertical-align:middle">
+                        <div th:id="'time_' + ${timeSection.id} + '_1'"></div>
+                    </td>
+                </tr>
+
+            </table>
+        </div>
+
+    </form>
+
+    <script src="js/jquery-1.12.4.js" type="application/javascript" charset="UTF-8"></script>
+    <script src="js/bootstrap.js" type="application/javascript" charset="UTF-8"></script>
+    <script src="js/layer.js"></script>
+    <script src="laydate/laydate.js" type="text/javascript"></script>
+    <script src="js/common.js" type="application/javascript" charset="UTF-8"></script>
+    <script type="text/javascript" th:inline="javascript">
+        //日期插件
+        laydate.render({
+            elem: '#beginTime',
+            theme: '#8D48F9'//指定元素
+            , trigger: 'click',
+            done: function(value, date){
+                $("#ackBtn").attr("href", "/scheduleExportExcel?beginTime="+$("#beginTime").val()+"&endTime="+$("#endTime").val());
+            }
+        });
+        laydate.render({
+            elem: '#endTime',
+            theme: '#8D48F9'//指定元素
+            , trigger: 'click',
+            done: function(value, date){
+                $("#ackBtn").attr("href", "/scheduleExportExcel?beginTime="+$("#beginTime").val()+"&endTime="+$("#endTime").val());
+            }
+        });
+
+        //
+        $(function () {
+            var msg = [[${msg}]];
+            if (msg) {
+                alert(msg);
+            }
+            //获取排课信息
+            var tds = $("div[id^='time_']");
+            var scheduleList = [[${scheduleVOList}]];
+            var position, positionID, positionX, positionY;
+            var lenth = scheduleList.length;
+            for (var i = 0; i < lenth; i++) {
+                for (var j = 0; j < tds.length; j++) {
+                    positionID = $(tds[j]).attr("id")
+                    position = positionID.split("_");
+                    positionX = position[1];
+                    positionY = position[2];
+                    //和时间段的id和星期的id比对，一样则填入
+                    if ((scheduleList[i].date.id == positionX) && (scheduleList[i].courseWeek == positionY)) {
+                        if (scheduleList[i].course == null) {
+                            $("#" + positionID).append(
+                                "<input type='checkbox'  name='caption'id='box_'" + scheduleList[i].id + "'" + " value='" + scheduleList[i].id + "'/>"
+                                +"<span style='color: red'>[" + i + "]课程已被删除<br/><br/></span>")
+                        } else if (scheduleList[i].teacherVO == null) {
+                            $("#" + positionID).append(
+                                "<input type='checkbox'  name='caption'id='box_'" + scheduleList[i].id + "'" + " value='" + scheduleList[i].id + "'/>"
+                                +"<span style='color: red'>[" + i + "]请添加老师<br/><br/></span>")
+                        } else {
+                            $("#" + positionID).append(
+                                "<input type='checkbox'  name='caption'id='box_'" + scheduleList[i].id + "'" + " value='" + scheduleList[i].id + "'/>" +
+
+                                scheduleList[i].course.name + "("
+                                +
+                                scheduleList[i].course.ageArea + " "
+                                +
+                                scheduleList[i].classroom.name + " "
+                                +
+                                "(<span style='color: #8D48F9'>"+scheduleList[i].studengNames + "</span>)"
+                                +
+                                "共"
+                                +
+                                scheduleList[i].totalStu + "人 "
+                                +
+                                "[" + scheduleList[i].teacherVO.name + "]"
+                                + ") <a href='editSchedule?scheduleId=" + scheduleList[i].id + "' >" +
+                                "<span class='glyphicon glyphicon-pencil'></span></a>" +
+                                "&nbsp;<a href='editRelation?scheduleId=" + scheduleList[i].id + "'>" +
+                                "<span class='glyphicon glyphicon-floppy-saved'></span></a>" + "<br/><br/>");
+                        }
+                    }
+                }
+
+            }
+
+        })
+        /*提交查询*/
+        $("#selectSchedule").click(function () {
+            $("#scheduleform").attr("action", "selectSchedule");
+            $("#scheduleform").submit();
+        });
+        /*提交删除*/
+        $("#dropSchedule").click(function () {
+            var chex = $("input[id^='box_']:checked");
+            if (chex.length == 0) {
+                alert("请选择你要删除的排课");
+                layer.msg("请选择你要删除的排课");
+            } else {
+                if (confirm("确定要删除该排课吗？")) {
+                    $("#scheduleform").attr("action", "deleteSchedules");
+                    $("#scheduleform").submit();
+                }
+            }
+
+        });
+
+
+    </script>
+</body>
+</html>

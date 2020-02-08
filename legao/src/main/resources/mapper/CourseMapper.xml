@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxq.legao.dao.CourseDao">
+    <insert id="insertCourse" parameterType="com.zxq.legao.entity.po.CoursePO">
+        INSERT INTO legao_course(
+            name,
+            ageArea,
+            teacherTools,
+            courseTime,
+            seriesID
+        ) VALUES(#{name},#{ageArea},#{teacherTools},#{courseTime},#{seriesID});
+    </insert>
+    <delete id="deleteCourse" parameterType="java.util.List">
+        DELETE FROM legao_course WHERE id IN
+        <foreach collection="list" separator="," close=")" open="(" item="id">
+            #{id}
+        </foreach>
+
+    </delete>
+    <update id="updateCourse" parameterType="com.zxq.legao.entity.po.CoursePO">
+        UPDATE legao_course SET name = #{name},ageArea = #{ageArea},teacherTools = #{teacherTools},courseTime = #{courseTime},seriesID = #{seriesID}
+        WHERE id = #{id};
+    </update>
+    <select id="selectCourse" parameterType="com.zxq.legao.entity.po.CoursePO"
+            resultType="com.zxq.legao.entity.vo.CourseVO" resultMap="select_courseMap">
+        SELECT
+        legao_course.id,
+        legao_course.`name`,
+        legao_course.ageArea,
+        legao_course.teacherTools,
+        legao_course.courseTime,
+        legao_course.seriesID
+        FROM
+        legao_course
+        <where>
+
+            <if test="name!=null and name!=''">
+                and name like '%${name}%'
+            </if>
+            <if test="ageArea!=null and ageArea!=''">
+                and ageArea = #{ageArea}
+            </if>
+        </where>
+
+    </select>
+    <select id="selectCourseByID" parameterType="java.lang.Integer" resultType="com.zxq.legao.entity.vo.CourseVO" resultMap="select_courseMap">
+        SELECT
+            legao_course.id,
+            legao_course.`name`,
+            legao_course.ageArea,
+            legao_course.teacherTools,
+            legao_course.courseTime,
+            legao_course.seriesID
+        FROM
+            legao_course
+        WHERE id = #{id};
+    </select>
+    <resultMap id="select_courseMap" type="com.zxq.legao.entity.vo.CourseVO">
+        <id column="id" property="id"></id>
+        <result column="name" property="name"></result>
+        <result column="ageArea" property="ageArea"></result>
+        <result column="teacherTools" property="teacherTools"></result>
+        <result column="courseTime" property="courseTime"></result>
+        <association property="series" column="seriesID" javaType="com.zxq.legao.entity.vo.SeriesVO"
+                     select="com.zxq.legao.dao.SeriesDao.selectSeriesByID"></association>
+
+    </resultMap>
+    <select id="findAllCourseName"  resultType="com.zxq.legao.entity.po.CoursePO">
+        SELECT id,name FROM legao_course
+    </select>
+    <select id="selectCourseBySeriesId"  resultType="com.zxq.legao.entity.vo.CourseVO">
+        SELECT id,name FROM legao_course where seriesID = #{seriesID}
+    </select>
+</mapper>

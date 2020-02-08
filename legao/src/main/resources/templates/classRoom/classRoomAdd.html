@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>classRoomAdd</title>
+    <link href="../css/bootstrap.css" type="text/css" rel="stylesheet"/>
+    <link href="../css/main.css" type="text/css" rel="stylesheet"/>
+</head>
+<body>
+<div id="content_box">
+    <span class="glyphicon glyphicon-circle-arrow-right"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    当前位置：教室管理&nbsp;&gt;&nbsp;添加教室
+    <hr/>
+    <!--添加成功字样-->
+    <div id="addInfo"></div>
+    <div id="error" style="color:#FF0000;font-size:14px ;height: 20px;"></div>
+    <form id="classRoomAddform">
+
+        教室:<input name="name" id="classRoom_name" class="inputCss" style="width:200px ;" placeholder="请输入长度不超过20的字符"
+                   maxlength="20"/>&nbsp;&nbsp;&nbsp;&nbsp;
+        年龄段：<input name="ageArea" id="classRoom_ageArea" class="inputCss" style="width:200px ;" placeholder="请输入年龄段"
+                   maxlength="20"/>
+
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        负责人： <select class="inputCss" id="responsePersonName" name="responsePersonName">
+        <option value="">--请选择负责人--</option>
+        <option th:value="${employName.name}" th:each="employName:${application.allemploy}">
+            [[${employName.name}]]
+        </option>
+    </select>
+
+        </br>
+        </br>
+        <input type="button" value="添加" class="btn btn-success" id="btn"/>&nbsp;&nbsp;&nbsp;&nbsp;
+        <input type="reset" class="btn btn-danger" value="取消"/>
+
+    </form>
+</div>
+<!-- 判断数据是否符合要求，提交表单的标志 -->
+<input type="hidden" id="submitInfo" value="false"/>
+<!-- 判断是否添加成功 -->
+<input type="hidden" th:value="${type}" id="typeInfo"/>
+
+</body>
+<script src="js/jquery-1.12.4.js" type="application/javascript" charset="UTF-8"></script>
+<script src="js/common.js" type="application/javascript" charset="UTF-8"></script>
+<script type="text/javascript">
+
+    /* type */
+    $(function () {
+        if ($("#typeInfo").val() == 'yes') {
+            $("#addInfo").html('<h3 style="color: green;height: 30px;">添加成功</h3>');
+        } else if ($("#typeInfo").val() == 'no') {
+            $("#addInfo").html('<h3 style="color: green;height: 30px;">添加失败</h3>');
+        }
+        /* 定时清除添加成功字样 */
+        setTimeout(function () {
+            $("#addInfo").text('');
+        }, 5000);
+
+
+    });
+
+    /*判断状态，教室名是否为空*/
+    $("#btn").click(function () {
+        var classRoom_name = $("#classRoom_name").val();
+        var classRoom_ageArea = $("#classRoom_ageArea").val();
+        var responsePersonName = $("#responsePersonName").val();
+        var re = /[`~!@#$%^&*_+<>{}\\/'[\]]/im;
+
+        if (classRoom_name.trim().length == 0) {
+            $("#error").text("*请输入教室名称");
+        } else if (re.test(classRoom_name.trim())) {
+            $("#error").text("*教室人存在`~!@#$%^&*_+<>{}\'[]/等的非法字符");
+        } else if (classRoom_ageArea.trim().length == 0) {
+            $("#error").text("*请输入教室所适合的年龄段");
+        } else if (re.test(classRoom_ageArea.trim())) {
+            $("#error").text("*教室年龄段存在`~!@#$%^&*_+<>{}\'[]/等的非法字符");
+        } else if (responsePersonName.trim().length == 0) {
+            $("#error").text("*请选择教室负责人");
+        } else {
+            $("#classRoomAddform").attr("action", "insertClassRoom");
+            $("#classRoomAddform").submit();
+        }
+
+    });
+
+
+</script>
+</html>

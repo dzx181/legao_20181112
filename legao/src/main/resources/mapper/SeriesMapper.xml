@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxq.legao.dao.SeriesDao">
+    <insert id="insertSeries" parameterType="com.zxq.legao.entity.po.SeriesPO">
+        INSERT INTO legao_series(
+            name,
+            ageArea,
+            teacherTools,
+            courseTime
+        ) VALUES(#{name},#{ageArea},#{teacherTools},#{courseTime});
+    </insert>
+    <delete id="deleteSeries" parameterType="java.util.List">
+        DELETE FROM legao_series WHERE id IN
+        <foreach collection="list" separator="," close=")" open="(" item="id">
+            #{id}
+        </foreach>
+
+    </delete>
+    <update id="updateSeries" parameterType="com.zxq.legao.entity.po.SeriesPO">
+        UPDATE legao_series SET name = #{name},ageArea = #{ageArea},teacherTools = #{teacherTools},courseTime = #{courseTime}
+        WHERE id = #{id};
+    </update>
+    <select id="selectSeries" parameterType="com.zxq.legao.entity.po.SeriesPO"
+            resultType="com.zxq.legao.entity.vo.SeriesVO">
+        SELECT
+        legao_series.id,
+        legao_series.`name`,
+        legao_series.ageArea,
+        legao_series.teacherTools,
+        legao_series.courseTime
+        FROM
+        legao_series
+        <where>
+
+            <if test="name!=null and name!=''">
+                and name like '%${name}%'
+            </if>
+            <if test="ageArea!=null and ageArea!=''">
+                and ageArea = #{ageArea}
+            </if>
+        </where>
+
+    </select>
+    <select id="selectSeriesByID" parameterType="java.lang.Integer" resultType="com.zxq.legao.entity.vo.SeriesVO" >
+        SELECT
+            legao_series.id,
+            legao_series.`name`,
+            legao_series.ageArea,
+            legao_series.teacherTools,
+            legao_series.courseTime
+        FROM
+            legao_series
+        WHERE id = #{id};
+    </select>
+
+    <select id="findAllSeriesName"  resultType="com.zxq.legao.entity.vo.SeriesVO">
+        SELECT id,name FROM legao_series
+    </select>
+</mapper>

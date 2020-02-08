@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxq.legao.dao.MembercardDao">
+    <insert id="insertMembercard" parameterType="com.zxq.legao.entity.po.MembercardPO">
+        INSERT INTO legao_membercard(
+            legao_membercard.memberCardCode,
+            legao_membercard.carType,
+            legao_membercard.`studentName`,
+            legao_membercard.classTime
+        ) VALUES(#{memberCardCode},#{carType},#{studentName},#{classTime});
+    </insert>
+    <delete id="deleteMembercard" parameterType="java.util.List">
+        DELETE FROM legao_membercard WHERE id IN
+        <foreach collection="list" separator="," close=")" open="(" item="id">
+            #{id}
+        </foreach>
+
+    </delete>
+    <update id="updateMembercard" parameterType="com.zxq.legao.entity.po.MembercardPO">
+        UPDATE legao_membercard SET memberCardCode = #{memberCardCode},studentName = #{studentName},classTime = #{classTime},carType = #{carType}
+        WHERE id = #{id};
+    </update>
+    <select id="selectMembercard" parameterType="com.zxq.legao.entity.po.MembercardPO"
+            resultType="com.zxq.legao.entity.po.MembercardPO">
+        SELECT
+        legao_membercard.id,
+        legao_membercard.memberCardCode,
+        legao_membercard.carType,
+        legao_membercard.`studentName`,
+        legao_membercard.classTime
+        FROM
+        legao_membercard
+
+        <where>
+
+            <if test="memberCardCode!=null and memberCardCode!=''">
+                and memberCardCode = #{memberCardCode}
+            </if>
+
+        </where>
+
+    </select>
+    <select id="selectMembercardByID" parameterType="java.lang.Integer" resultType="com.zxq.legao.entity.po.MembercardPO">
+        SELECT legao_membercard.id,
+               legao_membercard.memberCardCode,
+               legao_membercard.carType,
+               legao_membercard.`studentName`,
+               legao_membercard.classTime FROM legao_membercard WHERE id = #{id};
+    </select>
+
+    <select id="findAllMembercardName" resultType="com.zxq.legao.entity.po.MembercardPO">
+        SELECT id,memberCardCode FROM legao_membercard
+    </select>
+</mapper>

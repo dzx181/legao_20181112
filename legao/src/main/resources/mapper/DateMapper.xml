@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxq.legao.dao.DateDao">
+    <insert id="insertDate" parameterType="com.zxq.legao.entity.po.DatePO">
+        INSERT INTO legao_date(timeSection, status, remark,priority)
+        VALUES (#{timeSection}, #{status}, #{remark}, #{priority});
+    </insert>
+    <delete id="deleteDate" parameterType="java.util.List">
+        DELETE FROM legao_date WHERE id IN
+        <foreach collection="list" separator="," close=")" open="(" item="id">
+            #{id}
+        </foreach>
+
+    </delete>
+    <update id="updateDate" parameterType="com.zxq.legao.entity.po.DatePO">
+        UPDATE legao_date
+        SET timeSection = #{timeSection},
+            remark      = #{remark},
+            status      = #{status},
+            priority=#{priority}
+        WHERE id = #{id};
+    </update>
+    <select id="selectDate" parameterType="com.zxq.legao.entity.po.DatePO" resultType="com.zxq.legao.entity.vo.DateVO">
+        SELECT
+        legao_date.id,
+        legao_date.timeSection,
+        legao_date.`status`,
+        legao_date.remark,
+        legao_date.priority
+        FROM
+        legao_date
+
+        <where>
+            <if test="timeSection!=null and timeSection!=''">
+                and timeSection=#{timeSection}
+            </if>
+            <if test="remark!=null and remark!=''">
+                and remark=#{remark}
+            </if>
+
+        </where>
+        order by priority
+    </select>
+    <select id="selectDateByID" resultType="com.zxq.legao.entity.vo.DateVO" parameterType="java.lang.Integer">
+        SELECT
+            legao_date.id,
+            legao_date.timeSection,
+            legao_date.`status`,
+            legao_date.remark,
+            legao_date.priority
+        FROM
+            legao_date
+        where id = #{id}
+    </select>
+    <select id="selectAllDate" resultType="com.zxq.legao.entity.vo.DateVO">
+        SELECT
+            legao_date.id,
+            legao_date.timeSection
+        FROM
+            legao_date
+        WHERE
+            status = 1
+        order by priority
+
+    </select>
+</mapper>

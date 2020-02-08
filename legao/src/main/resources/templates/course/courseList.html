@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>courseList</title>
+    <link href="css/bootstrap.css" type="text/css" rel="stylesheet"/>
+    <link href="css/main.css" type="text/css" rel="stylesheet"/>
+    <link href="css/paging.css" type="text/css" rel="stylesheet"/>
+    <style>
+
+
+    </style>
+</head>
+<body>
+<div  id="content_box" style="display:flex;flex-direction:column;">
+    <div style="width: 80%">
+    <span class="glyphicon glyphicon-circle-arrow-right"></span>&nbsp;&nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp;
+    当前位置：课程管理&nbsp;&gt;&nbsp;课程查询
+
+    <a style="cursor: pointer;text-decoration: none;color: #000000;float: right;" href="#"><span
+            class="glyphicon glyphicon-print"></span>&nbsp;打印</a>
+
+    <a style="cursor: pointer;text-decoration: none;color: #000000;float: right;margin-right: 50px;" href="/courseExportExcel"><span
+            class="glyphicon glyphicon-export"></span>&nbsp;导出</a>
+</div>
+    <hr/>
+    <form action="" id="courseform">
+
+        课程名：<input name="name" id="name" style="height: 35px;" class="inputCss"
+                   th:value="${blurCourse}==null? '':${blurCourse.name}"/>&nbsp;&nbsp;
+       年龄段：<input name="ageArea" id="ageArea" style="height: 35px;" class="inputCss"
+                  th:value="${blurCourse}==null? '':${blurCourse.ageArea}"/>
+
+       &nbsp;&nbsp;
+        <input type="button" value="搜索" class="btn btn-success" id="selectCourse"/>&nbsp;
+        <input type="button" class="btn btn-danger" value="删除" id="dropCourse" th:if="${session.user.status}==1"/>
+
+        <br/><br/>
+        <table cellspacing="0" cellpadding="" class="table table-hover table-striped table-bordered" style="text-align: center;"
+               id="course_tab">
+            <tr id="tr_th">
+                <th><input type="checkbox" name="caption" value="0" id="checkAll"/></th>
+                <th>课程系列</th>
+                <th>课程</th>
+                <th>年龄段</th>
+                <th>教具</th>
+                <th>课时</th>
+                <th th:if="${session.user.status}==1">操作</th>
+            </tr>
+            <tr th:each="course:${courseVOList}">
+                <td><input type="checkbox" name="caption"
+                           th:id="'box_'+${course.id}" th:value="${course.id}"/></td>
+                <td>
+                    <span th:if="${course.series}!= null">[[${course.series.name}]]</span>
+                    <span th:if="${course.series}== null" style="color: red">课程系列已经被删除</span></td>
+                <td>[[${course.name}]]</td>
+                <td>[[${course.ageArea}]]</td>
+                <td>[[${course.teacherTools}]]</td>
+                <td>[[${course.courseTime}]]</td>
+                <td th:if="${session.user.status}==1"><a th:href="'editCourse?courseId='+${course.id}"><span
+                        class="glyphicon glyphicon-pencil"></span></a></td>
+            </tr>
+        </table>
+
+    </form>
+    <!--分页元素-->
+    <div class="box" id="box" style="align-self:center;"></div>
+    <!--添加表单提交标志-->
+    <form id="pageForm" style="display: none">
+        <input name="name" th:value="${blurCourse}==null? '':${blurCourse.name}"/>&nbsp;&nbsp;
+        <input name="ageArea" th:value="${blurCourse}==null? '':${blurCourse.ageArea}"/>&nbsp;&nbsp;
+
+        <input type="text" id="pages" name="page"/>
+
+        <input type="button" id="btn" value="tijiao"/>
+        <!--传入分页的参数-->
+        <input type="text" id="actionName" value="selectCourse"/>
+    </form>
+</div>
+    <script src="js/jquery-1.12.4.js" type="application/javascript" charset="UTF-8"></script>
+    <script src="js/bootstrap.js" type="application/javascript" charset="UTF-8"></script>
+    <script src="js/paging.js" type="application/javascript"></script>
+    <script src="js/common.js" type="application/javascript" charset="UTF-8"></script>
+    <script type="text/javascript" th:inline="javascript">
+
+
+        /*提交查询*/
+        $("#selectCourse").click(function () {
+            $("#courseform").attr("action", "selectCourse");
+            $("#courseform").submit();
+        });
+        /*提交删除*/
+        $("#dropCourse").click(function () {
+            var chex = $("input[id^='box_']:checked");
+            if (chex.length == 0) {
+                alert("请选择你要删除的课程");
+            } else {
+                if (confirm("确定要删除该课程吗？")) {
+                    $("#courseform").attr("action", "deleteCourses");
+                    $("#courseform").submit();
+                }
+            }
+
+        });
+
+        /* 全选和反选*/
+        $("#checkAll").click(function () {
+
+            $("input[id^='box_']").prop("checked", this.checked);
+        });
+
+        //分页逻辑
+        var setTotalCount = [[${pageInfo.total}]];
+        var spageNum = [[${pageInfo.pages}]];
+        var initPageNos = [[${pageInfo.pageNum}]]
+        $('#box').paging({
+            initPageNo: initPageNos, // 初始页码
+            totalPages: spageNum, //总页数
+            totalCount: '合计 ' + setTotalCount + ' 条数据', // 条目总数
+            slideSpeed: 600, // 缓动速度。单位毫秒
+            jump: true, //是否支持跳转
+            callback: function (page) { // 回调函数
+                //给标志赋值
+                $("#pages").val(page);
+            }
+        })
+
+
+    </script>
+</body>
+</html>

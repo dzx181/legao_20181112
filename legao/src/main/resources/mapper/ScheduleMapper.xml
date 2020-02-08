@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zxq.legao.dao.ScheduleDao">
+    <insert id="insertSchedule" parameterType="com.zxq.legao.entity.po.SchedulePO" useGeneratedKeys="true"
+            keyProperty="id">
+        INSERT INTO legao_schedule(legao_schedule.schoolAreaID,
+                                   legao_schedule.`dateID`,
+                                   legao_schedule.courseID,
+                                   legao_schedule.classroomID,
+                                   legao_schedule.courseDate,
+                                   legao_schedule.teacherID,
+                                   legao_schedule.courseWeek,
+                                   legao_schedule.weekOfYear,
+                                   legao_schedule.seriesID)
+        VALUES (#{schoolAreaID},
+                #{dateID},
+                #{courseID},
+                #{classroomID},
+                #{courseDate},
+                #{teacherID},
+                #{courseWeek},
+                #{weekOfYear},
+                #{seriesID});
+    </insert>
+    <delete id="deleteSchedule" parameterType="java.util.List">
+        DELETE FROM legao_schedule WHERE id IN
+        <foreach collection="list" separator="," close=")" open="(" item="id">
+            #{id}
+        </foreach>
+
+    </delete>
+    <update id="updateSchedule" parameterType="com.zxq.legao.entity.po.SchedulePO">
+        UPDATE legao_schedule
+        SET
+            schoolAreaID = #{schoolAreaID},
+            dateID       = #{dateID},
+            courseID     = #{courseID},
+            classroomID  = #{classroomID},
+            courseDate   = #{courseDate},
+            teacherID    = #{teacherID},
+            courseWeek   = #{courseWeek},
+            weekOfYear   = #{weekOfYear},
+            seriesID     = #{seriesID}
+        WHERE id = #{id};
+    </update>
+    <select id="selectSchedule"
+            resultType="com.zxq.legao.entity.vo.ScheduleVO" resultMap="select_scheduleMap">
+
+        SELECT
+        legao_schedule.id,
+        legao_schedule.schoolAreaID,
+        legao_schedule.dateID,
+        legao_schedule.courseID,
+        legao_schedule.classroomID,
+        legao_schedule.courseDate,
+        legao_schedule.teacherID,
+        legao_schedule.courseWeek,
+        legao_schedule.weekOfYear,
+        legao_schedule.seriesID
+        FROM
+        legao_schedule
+        <where>
+            <if test="schoolAreaID!=null and schoolAreaID !=''">
+                and schoolAreaID = #{schoolAreaID}
+            </if>
+            <if test="weekOfYear!=null and weekOfYear !=''">
+                and weekOfYear = #{weekOfYear}
+            </if>
+            <if test="teacherID!=null and teacherID !=''">
+                and teacherID = #{teacherID}
+            </if>
+            <if test="dateID!=null and dateID !=''">
+                and dateID = #{dateID}
+            </if>
+
+            <choose>
+                <when test="schoolAreaID ==null and
+                            weekOfYear ==null and
+                            teacherID == null and
+                            dateID ==null
+                            ">
+
+                    YEARWEEK(courseDate) = YEARWEEK(now())
+                    and schoolAreaID = 1
+                </when>
+            </choose>
+
+
+        </where>
+
+    </select>
+    <select id="selectScheduleByID" parameterType="java.lang.Integer" resultType="com.zxq.legao.entity.vo.ScheduleVO"
+            resultMap="select_scheduleMap">
+        SELECT
+            legao_schedule.id,
+            legao_schedule.schoolAreaID,
+            legao_schedule.dateID,
+            legao_schedule.courseID,
+            legao_schedule.classroomID,
+            legao_schedule.courseDate,
+            legao_schedule.teacherID,
+            legao_schedule.courseWeek,
+            legao_schedule.weekOfYear,
+            legao_schedule.seriesID
+        FROM
+            legao_schedule
+
+        WHERE id = #{id}
+    </select>
+    <resultMap id="select_scheduleMap" type="com.zxq.legao.entity.vo.ScheduleVO">
+        <id column="id" property="id"></id>
+        <result column="courseWeek" property="courseWeek"></result>
+        <association property="teacherVO" column="teacherID"
+                     select="com.zxq.legao.dao.EmployDao.selectEmployById"
+                     javaType="com.zxq.legao.entity.po.DatePO"></association>
+        <association property="date" column="dateID"
+                     select="com.zxq.legao.dao.DateDao.selectDateByID"
+                     javaType="com.zxq.legao.entity.po.DatePO"></association>
+        <association property="schoolArea" column="schoolAreaID"
+                     select="com.zxq.legao.dao.SchoolAreaDao.selectSchoolAreaByID"
+                     javaType="com.zxq.legao.entity.vo.SchoolAreaVO"></association>
+        <association property="series" column="seriesID" javaType="com.zxq.legao.entity.vo.SeriesVO"
+                     select="com.zxq.legao.dao.SeriesDao.selectSeriesByID"></association>
+        <association property="classroom" column="classroomID" javaType="com.zxq.legao.entity.vo.ClassRoomVO"
+                     select="com.zxq.legao.dao.ClassRoomDao.selectClassRoomByID"></association>
+        <association property="course" column="courseID" javaType="com.zxq.legao.entity.vo.CourseVO"
+                     select="com.zxq.legao.dao.CourseDao.selectCourseByID"></association>
+    </resultMap>
+
+    <!--查询所有的周数-->
+    <select id="findAllweekOfYear" resultType="com.zxq.legao.entity.vo.ScheduleVO" resultMap="select_allweekOfYearMap">
+        SELECT
+            legao_schedule.weekOfYear
+        FROM
+            legao_schedule
+        GROUP BY weekOfYear
+
+    </select>
+    <resultMap id="select_allweekOfYearMap" type="com.zxq.legao.entity.vo.ScheduleVO">
+        <result column="weekOfYear" property="weekOfYear"></result>
+        <association property="date" column="dateID" select="com.zxq.legao.dao.DateDao.selectDateByID"
+                     javaType="com.zxq.legao.entity.vo.DateVO"></association>
+    </resultMap>
+    <select id="selectScheduleByCoureTime" resultType="com.zxq.legao.entity.vo.ScheduleVO"
+            resultMap="select_scheduleMap">
+        select * from legao_schedule where not (courseDate <![CDATA[<]]> #{beginTime} or courseDate <![CDATA[>]]> #{endTime} )
+    </select>
+</mapper>
