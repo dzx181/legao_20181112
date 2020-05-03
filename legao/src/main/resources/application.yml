@@ -6,7 +6,7 @@ server:
       #Duration转换字符串方式，默认为正，负以-开头，紧接着P，以下字母不区分大小写
       #D ：天 T：天和小时之间的分隔符 H ：小时  M：分钟  S：秒 每个单位都必须是数字，且时分秒顺序不能乱
       #比如P2dt3m5s   P3d  pt3h
-      timeout: 1000m
+      timeout: P1d #一天的时间
 
 spring:
   application:

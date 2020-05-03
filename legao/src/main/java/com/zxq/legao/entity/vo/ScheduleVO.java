@@ -12,14 +12,14 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ScheduleVO {
-    private  Integer id;
-    private  SchoolAreaVO schoolArea;
-    private  DateVO  date;
+    private Integer id;
+    private SchoolAreaVO schoolArea;
+    private DateVO date;
     private CourseVO course;
     private ClassRoomVO classroom;
     private List<ScheduleVO> student;
     private Date courseDate;
-    private  EmployVO teacherVO;
+    private EmployVO teacherVO;
     private String courseWeek;
     private String weekOfYear;
     private SeriesVO series;
@@ -40,5 +40,19 @@ public class ScheduleVO {
      */
     private String studengNames;
 
+    private String thisYear;
+    private Integer schoolAreaID;
+    private Integer dateID;
+    private Integer courseID;
+    private Integer classroomID;
+    private Integer seriesID;
+    private Integer teacherID;
 
+
+    public void setWeekOfYear(String weekOfYear) {
+        if (weekOfYear != null && !"".equals(weekOfYear)) {
+            this.weekOfYear = weekOfYear.substring(4);
+            this.thisYear = weekOfYear.substring(0, 4);
+        }
+    }
 }

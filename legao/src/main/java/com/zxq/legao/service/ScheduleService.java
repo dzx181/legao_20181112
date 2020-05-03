@@ -1,6 +1,7 @@
 package com.zxq.legao.service;
 
 
+import com.zxq.legao.entity.dto.ScheduleDTO;
 import com.zxq.legao.entity.po.SchedulePO;
 import com.zxq.legao.entity.vo.ScheduleExportVO;
 import com.zxq.legao.entity.vo.ScheduleVO;
@@ -24,7 +25,7 @@ public interface ScheduleService {
 
     int updateSchedule(SchedulePO schedulePO,HttpServletRequest request);
 
-    String selectSchedule( SchedulePO schedulePO, HttpServletRequest request);
+    String selectSchedule(ScheduleDTO schedulePO, HttpServletRequest request);
 
     ScheduleVO selectScheduleByID(Integer scheduleID);
 

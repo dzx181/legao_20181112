@@ -1,6 +1,6 @@
 package com.zxq.legao.util;
 
-import com.zxq.legao.entity.po.SchedulePO;
+import com.zxq.legao.entity.dto.ScheduleDTO;
 
 /**
  * 字符串工具
@@ -14,7 +14,7 @@ public class StringUtil {
      * @param schedulePO
      * @return
      */
-    public static boolean ifNUll(SchedulePO schedulePO){
+    public static boolean ifNUll(ScheduleDTO schedulePO){
         if (schedulePO.getSchoolAreaID() == null && schedulePO.getWeekOfYear() == null
                 && schedulePO.getTeacherID() == null  && schedulePO.getDateID() == null){
             return true;

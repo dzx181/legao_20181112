@@ -3,7 +3,6 @@ package com.zxq.legao.controller;
 import com.zxq.legao.entity.po.*;
 import com.zxq.legao.entity.vo.*;
 import com.zxq.legao.service.*;
-import com.zxq.legao.util.DateUtil;
 import com.zxq.legao.util.ExportUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -124,7 +123,6 @@ public class UserController {
             List<CoursePO> allCourseName = courseService.findAllCourseName();
             List<SeriesVO> allSeriesName = seriesService.findAllSeriesName();
             List<DateVO> allDate = dateService.findAllDate();
-            List<ScheduleVO> allWeekOfYear = DateUtil.getDatebyWeekOfYear(scheduleService.findAllweekOfYear());
             List<ClasstimepackPO> allClasstimepack = classtimepackService.findAllClasstimepackName();
             List<DepositPO> allDeposit = depositService.findAllDepositName();
             List<MembercardPO> allMembercard = membercardService.findAllMembercardName();
@@ -139,7 +137,6 @@ public class UserController {
             servletContext.setAttribute("allCourseName", allCourseName);
             servletContext.setAttribute("allSeriesName", allSeriesName);
             servletContext.setAttribute("allDate", allDate);
-            servletContext.setAttribute("allWeekOfYear", allWeekOfYear);
             servletContext.setAttribute("allClasstimepack", allClasstimepack);
             servletContext.setAttribute("allDeposit", allDeposit);
             servletContext.setAttribute("allMembercard", allMembercard);

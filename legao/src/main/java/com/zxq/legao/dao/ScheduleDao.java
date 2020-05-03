@@ -1,6 +1,7 @@
 package com.zxq.legao.dao;
 
 
+import com.zxq.legao.entity.dto.ScheduleDTO;
 import com.zxq.legao.entity.po.SchedulePO;
 import com.zxq.legao.entity.vo.ScheduleVO;
 import org.apache.ibatis.annotations.Param;
@@ -23,7 +24,7 @@ public interface ScheduleDao {
 
     int updateSchedule(SchedulePO schedulePO);
 
-    List<ScheduleVO> selectSchedule(@Param("schedulePO") SchedulePO schedulePO);
+    List<ScheduleVO> selectSchedule(@Param("schedulePO") ScheduleDTO schedulePO);
 
     ScheduleVO selectScheduleByID(Integer scheduleID);
 

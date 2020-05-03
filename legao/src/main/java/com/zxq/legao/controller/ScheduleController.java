@@ -1,6 +1,7 @@
 package com.zxq.legao.controller;
 
 
+import com.zxq.legao.entity.dto.ScheduleDTO;
 import com.zxq.legao.entity.po.SchedulePO;
 import com.zxq.legao.entity.vo.ScheduleExportVO;
 import com.zxq.legao.entity.vo.ScheduleVO;
@@ -14,7 +15,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
@@ -69,7 +69,7 @@ public class ScheduleController {
      * 查询排课
      */
     @RequestMapping("/selectSchedule")
-    public String selectSchedule(SchedulePO SchedulePO, HttpServletRequest request, Integer page) {
+    public String selectSchedule(ScheduleDTO SchedulePO, HttpServletRequest request, Integer page) {
         return scheduleService.selectSchedule(SchedulePO, request);
     }
 
@@ -83,10 +83,6 @@ public class ScheduleController {
         } else {
             request.setAttribute("type", "no");
         }
-        List<ScheduleVO> allWeekOfYear = scheduleService.findAllweekOfYear();
-        ServletContext servletContext = request.getServletContext();
-        servletContext.setAttribute("allWeekOfYear", allWeekOfYear);
-
         return "schedule/scheduleAdd";
     }
 
@@ -95,12 +91,7 @@ public class ScheduleController {
      */
     @RequestMapping("/deleteSchedules")
     public String deleteSchedules(Integer[] caption, HttpServletRequest request) {
-
         scheduleService.deleteSchedule(Arrays.asList(caption));
-
-        List<ScheduleVO> allWeekOfYear = scheduleService.findAllweekOfYear();
-        ServletContext servletContext = request.getServletContext();
-        servletContext.setAttribute("allWeekOfYear", allWeekOfYear);
         return "forward:/selectSchedule";
 
 
@@ -142,9 +133,6 @@ public class ScheduleController {
     @RequestMapping("/saveSchedule")
     public String saveSchedule(SchedulePO Schedule, HttpServletRequest request) {
         scheduleService.updateSchedule(Schedule,request);
-        List<ScheduleVO> allWeekOfYear = scheduleService.findAllweekOfYear();
-        ServletContext servletContext = request.getServletContext();
-        servletContext.setAttribute("allWeekOfYear", allWeekOfYear);
         return "redirect:/selectSchedule";
     }
 }

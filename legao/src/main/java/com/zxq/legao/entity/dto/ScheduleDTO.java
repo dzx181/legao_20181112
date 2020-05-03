@@ -1,5 +1,11 @@
-package com.zxq.legao.entity.po;
+package com.zxq.legao.entity.dto;
 
+/**
+ * dto
+ *
+ * @author dengzhenxiang Email:dengzhenxiang@co-mall.com
+ * @since 2020/5/3
+ */
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +18,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SchedulePO implements Serializable {
+public class ScheduleDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Integer id;
@@ -46,10 +52,7 @@ public class SchedulePO implements Serializable {
 
     private String thisYear;
     public void setWeekOfYear(String weekOfYear) {
-        if (weekOfYear != null && !"".equals(weekOfYear)&&weekOfYear.length()>4) {
-            this.weekOfYear = weekOfYear.substring(4);
-            this.thisYear = weekOfYear.substring(0, 4);
-        }
+            this.weekOfYear = thisYear+weekOfYear;
     }
     public void setWeekOfYearSpecial(String str){
         this.weekOfYear = str;

@@ -12,34 +12,38 @@
     </style>
 </head>
 <body>
-<div id="content_box"  >
+<div id="content_box">
     <span class="glyphicon glyphicon-circle-arrow-right"></span>&nbsp;&nbsp;&nbsp;&nbsp;
     &nbsp;&nbsp;&nbsp;
     当前位置：排课管理&nbsp;&gt;&nbsp;排课查询
 
-    <a style="margin-left: 530px;cursor: pointer;text-decoration: none;color: #000000; " href="#" ><span
+    <a style="margin-left: 530px;cursor: pointer;text-decoration: none;color: #000000; " href="#"><span
             class="glyphicon glyphicon-print"></span>&nbsp;打印</a>
     <!-- 导出内容Modal -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                            aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title" id="myModalLabel">导出选项</h4>
                 </div>
                 <div class="modal-body">
-                   选择时间： <input id="beginTime" class="inputCss" style="width:205px;" readonly="readonly"/>&nbsp;-&nbsp;
+                    选择时间： <input id="beginTime" class="inputCss" style="width:205px;" readonly="readonly"/>&nbsp;-&nbsp;
                     <input id="endTime" class="inputCss" style="width:205px;" readonly="readonly"/>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-                    <a href="#" id="ackBtn"><button type="button" class="btn btn-primary" >确定</button></a>
+                    <a href="#" id="ackBtn">
+                        <button type="button" class="btn btn-primary">确定</button>
+                    </a>
                 </div>
             </div>
         </div>
     </div>
-    <a style="margin-left: 100px;cursor: pointer;text-decoration: none;color: #000000;" href="#" data-toggle="modal" data-target="#myModal" id="export"><span
-            class="glyphicon glyphicon-export" ></span>&nbsp;导出</a>
+    <a style="margin-left: 100px;cursor: pointer;text-decoration: none;color: #000000;" href="#" data-toggle="modal"
+       data-target="#myModal" id="export"><span
+            class="glyphicon glyphicon-export"></span>&nbsp;导出</a>
 
     <hr/>
     <!--排课表-->
@@ -52,13 +56,9 @@
         </option>
 
     </select>&nbsp;&nbsp;
-        周数：<select class="inputCss" name="weekOfYear">
-        <option value="">--请选择周数--</option>
-        <option th:value="${schedule.weekOfYear}" th:each="schedule:${application.allWeekOfYear}"
-                th:selected="(${blurSchedule}!=null)?((${blurSchedule.weekOfYear} == ${schedule.weekOfYear})?true:false):false">
-            第[[${schedule.weekOfYear}]]周
-        </option>
-    </select>&nbsp;&nbsp;
+        学年：<input id="thisYear" type="text" class="inputCss" readonly="true" name="thisYear"
+                  th:value="${blurSchedule.thisYear}"/>
+        周数：<input id="weekOfYear" type="text" class="inputCss" name="weekOfYear" th:value="${blurSchedule.weekOfYear}"/>
         学员的老师：
 
         <select class="inputCss" id="teacherName" name="teacherID">
@@ -67,7 +67,7 @@
                     th:selected="(${blurSchedule}!=null)?((${blurSchedule.teacherID} == ${teacherName.id})?true:false):false">
                 [[${teacherName.name}]]
             </option>
-        </select>&nbsp;&nbsp;
+        </select>&nbsp;&nbsp;<div style="height:10px;width: 5px;"></div>
         时间段：
         <select class="inputCss" id="dateID" name="dateID">
             <option value="">--请选择时间段--</option>
@@ -83,7 +83,8 @@
 
         <div class="table-responsive">
             <div style="text-align: center"><h3>
-                第[[${dateVO.weekOfYear}]]周（[[${dateVO.startWeekDate}]]—[[${dateVO.endWeekDate}]]） 排课表</h3></div>
+                [[${dateVO.thisYear}]]年&nbsp;&nbsp;第[[${dateVO.weekOfYear}]]周（[[${dateVO.startWeekDate}]]—[[${dateVO.endWeekDate}]]）
+                排课表</h3></div>
             <table class="table table-bordered" cellspacing="0" cellpadding="" style="text-align: center;">
                 <tr>
                     <th>时间段</th>
@@ -138,19 +139,25 @@
             elem: '#beginTime',
             theme: '#8D48F9'//指定元素
             , trigger: 'click',
-            done: function(value, date){
-                $("#ackBtn").attr("href", "/scheduleExportExcel?beginTime="+$("#beginTime").val()+"&endTime="+$("#endTime").val());
+            done: function (value, date) {
+                $("#ackBtn").attr("href", "/scheduleExportExcel?beginTime=" + $("#beginTime").val() + "&endTime=" + $("#endTime").val());
             }
         });
         laydate.render({
             elem: '#endTime',
             theme: '#8D48F9'//指定元素
             , trigger: 'click',
-            done: function(value, date){
-                $("#ackBtn").attr("href", "/scheduleExportExcel?beginTime="+$("#beginTime").val()+"&endTime="+$("#endTime").val());
+            done: function (value, date) {
+                $("#ackBtn").attr("href", "/scheduleExportExcel?beginTime=" + $("#beginTime").val() + "&endTime=" + $("#endTime").val());
             }
         });
-
+        laydate.render({
+            elem: '#thisYear',
+            theme: '#8D48F9'//指定元素
+            , type: 'year',
+            trigger: 'click',
+            format: 'yyyy'
+        });
         //
         $(function () {
             var msg = [[${msg}]];
@@ -173,11 +180,11 @@
                         if (scheduleList[i].course == null) {
                             $("#" + positionID).append(
                                 "<input type='checkbox'  name='caption'id='box_'" + scheduleList[i].id + "'" + " value='" + scheduleList[i].id + "'/>"
-                                +"<span style='color: red'>[" + i + "]课程已被删除<br/><br/></span>")
+                                + "<span style='color: red'>[" + i + "]课程已被删除<br/><br/></span>")
                         } else if (scheduleList[i].teacherVO == null) {
                             $("#" + positionID).append(
                                 "<input type='checkbox'  name='caption'id='box_'" + scheduleList[i].id + "'" + " value='" + scheduleList[i].id + "'/>"
-                                +"<span style='color: red'>[" + i + "]请添加老师<br/><br/></span>")
+                                + "<span style='color: red'>[" + i + "]请添加老师<br/><br/></span>")
                         } else {
                             $("#" + positionID).append(
                                 "<input type='checkbox'  name='caption'id='box_'" + scheduleList[i].id + "'" + " value='" + scheduleList[i].id + "'/>" +
@@ -188,7 +195,7 @@
                                 +
                                 scheduleList[i].classroom.name + " "
                                 +
-                                "(<span style='color: #8D48F9'>"+scheduleList[i].studengNames + "</span>)"
+                                "(<span style='color: #8D48F9'>" + scheduleList[i].studengNames + "</span>)"
                                 +
                                 "共"
                                 +
@@ -210,6 +217,9 @@
         $("#selectSchedule").click(function () {
             $("#scheduleform").attr("action", "selectSchedule");
             $("#scheduleform").submit();
+        });
+        $("#ackBtn").hover(function () {
+            $("#ackBtn").attr("href", "/scheduleExportExcel?beginTime=" + $("#beginTime").val() + "&endTime=" + $("#endTime").val());
         });
         /*提交删除*/
         $("#dropSchedule").click(function () {

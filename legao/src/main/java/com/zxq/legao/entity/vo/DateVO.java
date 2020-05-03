@@ -32,4 +32,9 @@ public class DateVO {
      */
     private Integer priority;
 
+    /**
+     * 今年
+     */
+    private String thisYear;
+
 }
