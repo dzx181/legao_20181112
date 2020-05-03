@@ -23,7 +23,7 @@ public interface ScheduleDao {
 
     int updateSchedule(SchedulePO schedulePO);
 
-    List<ScheduleVO> selectSchedule(SchedulePO schedulePO);
+    List<ScheduleVO> selectSchedule(@Param("schedulePO") SchedulePO schedulePO);
 
     ScheduleVO selectScheduleByID(Integer scheduleID);
 

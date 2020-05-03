@@ -43,7 +43,7 @@
     /* 登录名不能重复 */
     $("#user_name").blur(function () {
 
-        $.ajax("/scheduleExportExcel",// 发送请求的URL字符串。
+        $.ajax("/isReLoginName",// 发送请求的URL字符串。
             {
                 dataType: "json", // 预期服务器返回的数据类型。
                 type: "post", //  请求方式 POST或GET

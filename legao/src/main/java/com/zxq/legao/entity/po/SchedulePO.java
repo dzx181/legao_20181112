@@ -43,5 +43,9 @@ public class SchedulePO implements Serializable {
      * 更改人
      */
     private String modifyPerson;
+    /**
+     * 当前日期在今年的周数
+     */
+    private String weekOfThisYear;
 
 }

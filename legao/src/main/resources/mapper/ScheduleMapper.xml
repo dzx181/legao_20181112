@@ -60,26 +60,21 @@
         FROM
         legao_schedule
         <where>
-            <if test="schoolAreaID!=null and schoolAreaID !=''">
-                and schoolAreaID = #{schoolAreaID}
+            <if test="schedulePO.schoolAreaID!=null and schedulePO.schoolAreaID !=''">
+                and schoolAreaID = #{schedulePO.schoolAreaID}
             </if>
-            <if test="weekOfYear!=null and weekOfYear !=''">
-                and weekOfYear = #{weekOfYear}
+            <if test="schedulePO.weekOfYear!=null and schedulePO.weekOfYear !=''">
+                and weekOfYear = #{schedulePO.weekOfYear}
             </if>
-            <if test="teacherID!=null and teacherID !=''">
-                and teacherID = #{teacherID}
+            <if test="schedulePO.teacherID!=null and schedulePO.teacherID !=''">
+                and teacherID = #{schedulePO.teacherID}
             </if>
-            <if test="dateID!=null and dateID !=''">
-                and dateID = #{dateID}
+            <if test="schedulePO.dateID!=null and schedulePO.dateID !=''">
+                and dateID = #{schedulePO.dateID}
             </if>
 
             <choose>
-                <when test="schoolAreaID ==null and
-                            weekOfYear ==null and
-                            teacherID == null and
-                            dateID ==null
-                            ">
-
+                <when test="@com.zxq.legao.util.StringUtil@ifNUll(schedulePO)">
                     YEARWEEK(courseDate) = YEARWEEK(now())
                     and schoolAreaID = 1
                 </when>

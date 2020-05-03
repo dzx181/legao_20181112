@@ -17,8 +17,7 @@
     &nbsp;&nbsp;&nbsp;
     当前位置：排课管理&nbsp;&gt;&nbsp;排课查询
 
-    <a style="margin-left: 530px;cursor: pointer;text-decoration: none;color: #000000; " href="#" id="export"
-        data-toggle="modal" data-target="#myModal"><span
+    <a style="margin-left: 530px;cursor: pointer;text-decoration: none;color: #000000; " href="#" ><span
             class="glyphicon glyphicon-print"></span>&nbsp;打印</a>
     <!-- 导出内容Modal -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -29,7 +28,8 @@
                     <h4 class="modal-title" id="myModalLabel">导出选项</h4>
                 </div>
                 <div class="modal-body">
-                   选择时间： <input id="beginTime" class="inputCss" style="width:205px;"/>&nbsp;-&nbsp;<input id="endTime" class="inputCss" style="width:205px;"/>
+                   选择时间： <input id="beginTime" class="inputCss" style="width:205px;" readonly="readonly"/>&nbsp;-&nbsp;
+                    <input id="endTime" class="inputCss" style="width:205px;" readonly="readonly"/>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
@@ -38,8 +38,8 @@
             </div>
         </div>
     </div>
-    <a style="margin-left: 100px;cursor: pointer;text-decoration: none;color: #000000;" href="#"><span
-            class="glyphicon glyphicon-export"></span>&nbsp;导出</a>
+    <a style="margin-left: 100px;cursor: pointer;text-decoration: none;color: #000000;" href="#" data-toggle="modal" data-target="#myModal" id="export"><span
+            class="glyphicon glyphicon-export" ></span>&nbsp;导出</a>
 
     <hr/>
     <!--排课表-->
